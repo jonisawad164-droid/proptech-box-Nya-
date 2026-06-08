@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bravida Proptech BOX – Säljverktyg</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root {
+    --brv-blue: #0063A3;
+    --brv-darkblue: #003F6B;
+    --brv-lightblue: #CEE8EE;
+    --brv-pale: #E8F4F7;
+    --brv-green: #7DD4B0;
+    --brv-text: #2B2B2B;
+    --bg: #F5F7F9;
+    --surface: #FFFFFF;
+    --border: #E0E6EC;
+    --muted: #6B7884;
+    --gold: #E8A82E;
+    --success: #2E9968;
+    --danger: #E84C4C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--brv-text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; gap: 1rem; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .brand-row { display: flex; align-items: center; gap: 8px; }
+  .star-logo { width: 26px; height: 26px; flex-shrink: 0; }
+  .brand-text { font-weight: 600; font-size: 1.05rem; color: var(--brv-blue); letter-spacing: -0.01em; }
+  .brand-sub { color: var(--muted); font-size: 0.78rem; font-weight: 500; margin-left: 0.5rem; padding-left: 0.75rem; border-left: 1px solid var(--border); }
+  .header-actions { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; }
+  .btn-icon { background: transparent; border: 1px solid var(--border); color: var(--brv-text); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.82rem; cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.15s; }
+  .btn-icon:hover { border-color: var(--brv-blue); color: var(--brv-blue); }
+  .tabs { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; gap: 0; overflow-x: auto; }
+  .tab { padding: 0.85rem 1.1rem; cursor: pointer; font-size: 0.9rem; font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 0.4rem; }
+  .tab:hover { color: var(--brv-blue); }
+  .tab.active { color: var(--brv-blue); border-bottom-color: var(--brv-blue); }
+  .tab .tab-num { background: var(--bg); color: var(--muted); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; }
+  .tab.active .tab-num { background: var(--brv-blue); color: #fff; }
+  .tab .tab-count { background: var(--brv-pale); color: var(--brv-blue); border-radius: 10px; padding: 1px 7px; font-size: 0.72rem; font-weight: 600; margin-left: 4px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+  .panel { display: none; animation: fadeIn 0.2s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .hero { background: linear-gradient(135deg, var(--brv-blue) 0%, var(--brv-darkblue) 100%); color: #fff; padding: 1.5rem 1.75rem; border-radius: 14px; margin-bottom: 1.25rem; position: relative; overflow: hidden; }
+  .hero h1 { font-size: 1.45rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.015em; }
+  .hero p { color: rgba(255,255,255,0.85); font-size: 0.88rem; max-width: 700px; line-height: 1.5; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  @media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .card-title { font-size: 0.78rem; font-weight: 600; color: var(--brv-blue); text-transform: uppercase; letter-spacing: 0.06em; }
+  .card-subtitle { color: var(--muted); font-size: 0.78rem; }
+  .field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.85rem; }
+  .field label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+  .field label .help { font-size: 0.72rem; color: var(--muted); font-weight: 400; font-style: italic; }
+  .field input, .field select { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--brv-text); padding: 0.6rem 0.8rem; font-family: inherit; font-size: 0.9rem; outline: none; transition: border-color 0.15s, box-shadow 0.15s; width: 100%; }
+  .field input:focus, .field select:focus { border-color: var(--brv-blue); box-shadow: 0 0 0 3px rgba(0,99,163,0.1); }
+  .input-suffix { position: relative; }
+  .input-suffix input { padding-right: 50px; }
+  .input-suffix .suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.85rem; font-weight: 500; pointer-events: none; }
+  .btn { padding: 0.65rem 1.3rem; border-radius: 8px; border: none; cursor: pointer; font-family: inherit; font-size: 0.88rem; font-weight: 600; transition: all 0.15s; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; }
+  .btn-primary { background: var(--brv-blue); color: #fff; }
+  .btn-primary:hover { background: var(--brv-darkblue); }
+  .btn-secondary { background: var(--surface); color: var(--brv-blue); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--brv-blue); }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #257a52; }
+  .info-box { background: var(--brv-pale); border-left: 3px solid var(--brv-blue); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; color: var(--brv-darkblue); margin-bottom: 1rem; line-height: 1.5; }
+  .price-source { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.4rem; }
+  .price-chip { font-size: 0.78rem; padding: 0.4rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-weight: 500; color: var(--brv-text); transition: all 0.15s; }
+  .price-chip:hover { border-color: var(--brv-blue); color: var(--brv-blue); }
+  .pris-hint { font-size: 0.76rem; color: var(--success); font-weight: 600; margin-top: 0.3rem; min-height: 1em; }
+  .matning-table { width: 100%; border-collapse: collapse; }
+  .matning-table th { text-align: left; padding: 0.5rem 0.6rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+  .matning-table td { padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; }
+  .matning-table .col-prod { font-weight: 500; }
+  .matning-table .col-prod-desc { font-size: 0.75rem; color: var(--muted); font-weight: 400; margin-top: 1px; }
+  .matning-table .col-antal input, .matning-table .col-antal select { width: 100%; max-width: 150px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 5px; font-family: inherit; font-size: 0.88rem; }
+  .matning-table .col-antal input { width: 70px; text-align: center; }
+  .matning-table .col-antal input:focus, .matning-table .col-antal select:focus { border-color: var(--brv-blue); outline: none; }
+  .matning-table .col-pris { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .matning-table .col-summa { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--brv-darkblue); }
+  .matning-table tr.total td { background: var(--brv-pale); font-weight: 700; border-bottom: none; border-top: 2px solid var(--brv-blue); }
+  .matning-table tr.total .col-summa { font-size: 1.05rem; color: var(--brv-blue); }
+  .matning-table tr.section-header td { background: var(--bg); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 700; padding: 0.5rem 0.6rem; }
+  .tier-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 0.4rem; }
+  .tier { background: var(--surface); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.65rem 0.5rem; text-align: center; cursor: pointer; transition: all 0.15s; position: relative; }
+  .tier:hover { border-color: var(--brv-blue); }
+  .tier.selected { border-color: var(--brv-blue); background: var(--brv-pale); }
+  .tier.recommended::after { content: 'AUTO'; position: absolute; top: -8px; right: -6px; background: var(--brv-green); color: #fff; font-size: 0.62rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.05em; }
+  .tier-name { font-weight: 700; font-size: 0.88rem; color: var(--brv-darkblue); }
+  .tier-range { font-size: 0.72rem; color: var(--muted); margin: 2px 0; }
+  .tier-price { font-size: 0.78rem; font-weight: 600; color: var(--brv-blue); }
+  .product-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .product-card { border: 1.5px solid var(--border); border-radius: 10px; padding: 1rem; cursor: pointer; transition: all 0.15s; background: var(--surface); }
+  .product-card:hover { border-color: var(--brv-blue); }
+  .product-card.selected { border-color: var(--brv-blue); background: var(--brv-pale); }
+  .product-card-name { font-weight: 700; font-size: 1rem; color: var(--brv-darkblue); margin-bottom: 0.25rem; }
+  .product-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.85rem; margin-bottom: 1rem; }
+  @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr 1fr; } }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; }
+  .kpi.highlight { background: linear-gradient(135deg, var(--brv-pale) 0%, #fff 100%); border-color: var(--brv-blue); }
+  .kpi.gold { background: linear-gradient(135deg, #FFF8E8 0%, #fff 100%); border-color: var(--gold); }
+  .kpi-label { color: var(--muted); font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+  .kpi-value { font-size: 1.4rem; font-weight: 700; color: var(--brv-darkblue); letter-spacing: -0.02em; }
+  .kpi.gold .kpi-value { color: var(--gold); }
+  .kpi-unit { font-size: 0.78rem; font-weight: 500; color: var(--muted); margin-top: 2px; }
+  .summary-box { background: linear-gradient(135deg, var(--brv-blue) 0%, var(--brv-darkblue) 100%); color: #fff; border-radius: 14px; padding: 1.4rem; margin-bottom: 1rem; }
+  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.15); font-size: 0.9rem; }
+  .summary-row:last-of-type { border-bottom: none; }
+  .summary-row.total { border-top: 2px solid rgba(255,255,255,0.4); padding-top: 0.85rem; margin-top: 0.5rem; font-size: 1.1rem; font-weight: 700; }
+  .summary-row .val { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .register-table { width: 100%; border-collapse: collapse; }
+  .register-table th { text-align: left; padding: 0.6rem 0.85rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+  .register-table td { padding: 0.85rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  .register-table tr:hover td { background: var(--bg); }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+  .pdf-actions { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; display: flex; gap: 0.75rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .pdf-preview { background: #E8ECEF; padding: 1.5rem 1rem; border-radius: 10px; }
+  .brv-page { width: 210mm; max-width: 100%; min-height: 297mm; background: #fff; color: var(--brv-text); margin: 0 auto 1rem auto; padding: 0; font-family: 'DM Sans', sans-serif; font-size: 10pt; line-height: 1.5; box-shadow: 0 4px 24px rgba(0,0,0,0.15); position: relative; overflow: hidden; }
+  .brv-page-inner { padding: 20mm 20mm 30mm 20mm; position: relative; min-height: 297mm; box-sizing: border-box; }
+  .brv-cover-addr { position: absolute; top: 28mm; left: 20mm; color: var(--brv-blue); font-size: 10.5pt; line-height: 1.55; z-index: 3; }
+  .brv-cover-addr strong { font-weight: 700; display: block; }
+  .brv-cover-star { position: absolute; top: 22mm; right: 22mm; width: 48mm; height: 48mm; z-index: 3; }
+  .brv-cover-box { position: absolute; left: 0; right: 0; top: 85mm; bottom: 55mm; background: var(--brv-lightblue); border-radius: 0 120mm 0 0; z-index: 1; }
+  .brv-cover-inner { position: absolute; left: 22mm; top: 145mm; right: 40mm; z-index: 2; }
+  .brv-cover-title { font-size: 38pt; font-weight: 300; color: var(--brv-blue); letter-spacing: -0.025em; line-height: 1; margin-bottom: 4mm; }
+  .brv-cover-undertitle { font-size: 14pt; color: var(--brv-blue); margin-bottom: 14mm; line-height: 1.3; }
+  .brv-cover-sub { color: var(--brv-blue); font-size: 11pt; line-height: 1.8; }
+  .brv-cover-footer { position: absolute; bottom: 18mm; left: 20mm; right: 20mm; z-index: 3; display: flex; justify-content: space-between; align-items: flex-end; gap: 20mm; }
+  .brv-vision-block { max-width: 90mm; font-size: 7.5pt; line-height: 1.45; }
+  .brv-vision-title { color: var(--brv-blue); font-weight: 700; font-size: 8.5pt; margin-bottom: 1mm; }
+  .brv-logo-big { display: flex; align-items: center; gap: 5px; }
+  .brv-logo-svg-big { width: 26px; height: 26px; }
+  .brv-logo-text-big { font-size: 18pt; font-weight: 600; color: var(--brv-blue); }
+  .brv-header { display: flex; justify-content: space-between; margin-bottom: 12mm; }
+  .brv-logo-row { display: flex; align-items: center; gap: 4px; }
+  .brv-logo-svg { width: 20px; height: 20px; }
+  .brv-logo-text { font-weight: 600; font-size: 13pt; color: var(--brv-blue); letter-spacing: -0.015em; }
+  .brv-refblock { font-size: 9pt; text-align: right; display: flex; gap: 25mm; }
+  .brv-h1 { color: var(--brv-blue); font-size: 17pt; font-weight: 700; margin: 0 0 5mm 0; line-height: 1.2; letter-spacing: -0.01em; }
+  .brv-h2 { color: var(--brv-blue); font-size: 13pt; font-weight: 700; margin: 6mm 0 2mm 0; }
+  .brv-p { margin: 0 0 3mm 0; }
+  .brv-ul { margin: 1mm 0 4mm 5mm; }
+  .brv-ul li { margin-bottom: 1mm; list-style: disc; padding-left: 1mm; }
+  .brv-besparing-box { background: var(--brv-lightblue); padding: 5mm 6mm; border-radius: 2mm; margin: 5mm 0; }
+  .brv-besparing-label { font-weight: 700; color: var(--brv-blue); font-size: 10.5pt; margin-bottom: 2mm; text-transform: uppercase; letter-spacing: 0.05em; }
+  .brv-besparing-value { font-size: 16pt; font-weight: 700; color: var(--brv-darkblue); margin-bottom: 2mm; }
+  .brv-besparing-formula { font-size: 9pt; font-style: italic; }
+  .brv-payoff { font-size: 13pt; font-weight: 700; color: var(--brv-blue); margin: 5mm 0 2mm 0; }
+  .brv-price-row { display: flex; justify-content: space-between; padding: 1.5mm 0; gap: 4mm; }
+  .brv-price-label { flex: 1; line-height: 1.4; }
+  .brv-price-val { font-variant-numeric: tabular-nums; }
+  .brv-footer { position: absolute; bottom: 12mm; left: 20mm; right: 20mm; font-size: 7.5pt; line-height: 1.3; }
+  .brv-footer-cols { display: grid; grid-template-columns: 35mm 35mm 22mm 28mm 1fr; gap: 4mm; padding-top: 2mm; }
+  .brv-footer-fskat { font-size: 7pt; }
+  .signature-cursive { font-family: 'Dancing Script', cursive; font-size: 22pt; line-height: 1; }
+  @page { size: A4; margin: 0; }
+  @media print {
+    body, html { background: #fff; margin: 0; padding: 0; }
+    header, .tabs, #panel-kund, #panel-matning, #panel-energi, #panel-proptech, #panel-register, .pdf-actions, .panel-nav { display: none !important; }
+    main { max-width: none; padding: 0; margin: 0; }
+    #panel-anbud .card { display: none !important; }
+    .pdf-preview { background: #fff; padding: 0; box-shadow: none; border-radius: 0; }
+    .brv-page { box-shadow: none; margin: 0; page-break-after: always; width: 210mm; height: 297mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .brv-page:last-child { page-break-after: auto; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  }
+  .panel-nav { display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 1rem; flex-wrap: wrap; }
+  .step-flow { background: var(--brv-pale); border-radius: 8px; padding: 0.85rem 1.1rem; font-size: 0.85rem; color: var(--brv-darkblue); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .step-flow strong { color: var(--brv-blue); }
+  .matning-summary { background: var(--brv-blue); color: #fff; padding: 1rem 1.25rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+  .matning-summary-label { font-size: 0.85rem; opacity: 0.9; }
+  .matning-summary-val { font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* Tooltip system */
+  .tooltip-wrap { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+  .tooltip-icon { width: 16px; height: 16px; background: var(--muted); color: white; border-radius: 50%; font-size: 0.7rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: help; flex-shrink: 0; position: relative; }
+  .tooltip-icon::before { content: '?'; }
+  .tooltip-icon:hover::after { content: attr(data-tip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; white-space: normal; z-index: 200; pointer-events: none; max-width: 240px; line-height: 1.4; }
+
+  /* Jämför panel */
+  .jamfor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1rem; }
+  @media (max-width: 600px) { .jamfor-grid { grid-template-columns: 1fr; } }
+  .jamfor-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; position: relative; }
+  .jamfor-card.recommended-card { border-color: var(--success); box-shadow: 0 0 0 2px rgba(46,153,104,0.15); }
+  .jamfor-badge { display: inline-block; background: var(--success); color: #fff; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.6rem; letter-spacing: 0.04em; }
+  .jamfor-title { font-size: 1.1rem; font-weight: 700; color: var(--brv-darkblue); margin-bottom: 1rem; }
+  .jamfor-row { display: flex; justify-content: space-between; padding: 0.45rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  .jamfor-row:last-child { border-bottom: none; }
+  .jamfor-row .jlabel { color: var(--muted); }
+  .jamfor-row .jval { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .jamfor-payoff { font-size: 1.3rem; font-weight: 700; color: var(--brv-blue); margin-top: 0.75rem; }
+
+  /* Pulse save button */
+  @keyframes pulse-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(46,153,104,0.5); } 50% { box-shadow: 0 0 0 6px rgba(46,153,104,0); } }
+  .btn-save-pulse { animation: pulse-ring 1.8s ease-in-out infinite; }
+
+  /* PDF Import */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:500; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--surface); border-radius:16px; padding:1.75rem; width:min(520px,95vw); max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.25); position:relative; }
+  .modal-title { font-size:1.1rem; font-weight:700; color:var(--brv-darkblue); margin-bottom:0.5rem; }
+  .modal-sub { font-size:0.85rem; color:var(--muted); margin-bottom:1.25rem; line-height:1.5; }
+  .pdf-drop-zone { border:2px dashed var(--border); border-radius:12px; padding:2.5rem 1rem; text-align:center; cursor:pointer; transition:all 0.2s; background:var(--bg); }
+  .pdf-drop-zone:hover, .pdf-drop-zone.drag-over { border-color:var(--brv-blue); background:var(--brv-pale); }
+  .pdf-drop-zone .dz-icon { font-size:2.5rem; margin-bottom:0.5rem; }
+  .pdf-drop-zone .dz-text { color:var(--muted); font-size:0.9rem; }
+  .pdf-drop-zone .dz-text strong { color:var(--brv-blue); }
+  .pdf-parse-result { margin-top:1rem; background:var(--bg); border-radius:10px; padding:1rem; font-size:0.85rem; display:none; }
+  .pdf-parse-result.visible { display:block; }
+  .parse-row { display:flex; justify-content:space-between; padding:0.3rem 0; border-bottom:1px solid var(--border); }
+  .parse-row:last-child { border-bottom:none; }
+  .parse-label { color:var(--muted); }
+  .parse-val { font-weight:600; color:var(--brv-darkblue); }
+  .parse-val.missing { color:var(--danger); font-weight:400; font-style:italic; }
+  .pdf-status { font-size:0.82rem; margin-top:0.75rem; padding:0.6rem 0.9rem; border-radius:8px; display:none; }
+  .pdf-status.loading { display:block; background:#FFF8E8; color:#9A6B00; }
+  .pdf-status.success { display:block; background:#E8F5E9; color:#1B5E20; }
+  .pdf-status.error { display:block; background:#FFEBEE; color:#B71C1C; }
+  .btn-pdf-import { background:var(--brv-blue); color:#fff; border:none; padding:0.7rem 1.4rem; border-radius:8px; font-family:inherit; font-size:0.9rem; font-weight:600; cursor:pointer; width:100%; margin-top:1rem; display:none; }
+  .btn-pdf-import:hover { background:var(--brv-darkblue); }
+  .btn-pdf-import.visible { display:block; }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    header { padding: 0 1rem; gap: 0.5rem; height: 56px; }
+    .brand-sub { display: none; }
+    main { padding: 1rem 0.75rem; }
+    .card { padding: 1rem; }
+    .hero { padding: 1.2rem; }
+    .hero h1 { font-size: 1.2rem; }
+    .tier-row { grid-template-columns: 1fr 1fr; }
+    .product-toggle { grid-template-columns: 1fr; }
+    .matning-table { font-size: 0.82rem; }
+    .pdf-actions { flex-direction: column; align-items: stretch; }
+    .panel-nav { flex-direction: column; }
+    .panel-nav .btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-row">
+    <svg class="star-logo" viewBox="0 0 100 100"><g fill="#35D08A"><path fill-rule="evenodd" d="M50,4 Q50,50 96,50 Q50,50 50,96 Q50,50 4,50 Q50,50 50,4 Z M50,30 Q50,50 70,50 Q50,50 50,70 Q50,50 30,50 Q50,50 50,30 Z"/><path d="M50,37 Q50,50 63,50 Q50,50 50,63 Q50,50 37,50 Q50,50 50,37 Z"/></g></svg>
+    <span class="brand-text">bravida</span>
+    <span class="brand-sub">Proptech BOX Säljverktyg</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn-icon" onclick="openPdfModal()" style="border-color:var(--brv-blue);color:var(--brv-blue);font-weight:600">📋 Energideklaration</button>
+    <button class="btn-icon" onclick="document.getElementById('load-file').click()">📂 Öppna</button>
+    <input type="file" id="load-file" accept=".json" style="display:none" onchange="loadCustomer(event)">
+    <button class="btn-icon" onclick="resetForm()">↻ Ny kund</button>
+  </div>
+</header>
+
+<!-- PDF IMPORT MODAL -->
+<div class="modal-overlay" id="pdf-modal" onclick="closePdfModalOutside(event)">
+  <div class="modal">
+    <div class="modal-title">📋 Importera energideklaration (PDF)</div>
+    <div class="modal-sub">Ladda upp en Boverket-energideklaration (PDF) så fylls kunduppgifter, Atemp, antal lägenheter, energiförbrukning m.m. in automatiskt.</div>
+    <div class="pdf-drop-zone" id="pdf-drop-zone"
+         onclick="document.getElementById('pdf-file-input').click()"
+         ondragover="onPdfDragOver(event)" ondragleave="onPdfDragLeave(event)" ondrop="onPdfDrop(event)">
+      <div class="dz-icon">📄</div>
+      <div class="dz-text"><strong>Klicka för att välja PDF</strong><br>eller dra och släpp filen hit</div>
+    </div>
+    <input type="file" id="pdf-file-input" accept=".pdf" style="display:none" onchange="onPdfFileSelected(event)">
+    <div class="pdf-status" id="pdf-status"></div>
+    <div class="pdf-parse-result" id="pdf-parse-result">
+      <div style="font-weight:600; color:var(--brv-blue); margin-bottom:0.5rem; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em">Hittade värden</div>
+      <div id="pdf-parse-rows"></div>
+    </div>
+    <button class="btn-pdf-import" id="btn-pdf-apply" onclick="applyPdfData()">✓ Fyll i formuläret</button>
+    <div style="display:flex; justify-content:flex-end; margin-top:0.75rem">
+      <button class="btn-icon" onclick="closePdfModal()">Stäng</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="kund" onclick="switchTab('kund')"><span class="tab-num">1</span> Kund</div>
+  <div class="tab" data-tab="matning" onclick="switchTab('matning')"><span class="tab-num">2</span> Mätning</div>
+  <div class="tab" data-tab="energi" onclick="switchTab('energi')"><span class="tab-num">3</span> Smart Energikontroll</div>
+  <div class="tab" data-tab="proptech" onclick="switchTab('proptech')"><span class="tab-num">4</span> Proptech BOX</div>
+  <div class="tab" data-tab="jamfor" onclick="switchTab('jamfor')"><span class="tab-num">5</span> Jämför</div>
+  <div class="tab" data-tab="anbud" onclick="switchTab('anbud')"><span class="tab-num">6</span> Anbud-PDF</div>
+  <div class="tab" data-tab="register" onclick="switchTab('register')">👥 Register <span class="tab-count" id="register-count">0</span></div>
+</div>
+
+<main>
+
+<!-- ================= STEP 1: KUND & ENERGI ================= -->
+<div class="panel active" id="panel-kund">
+  <div class="hero">
+    <h1>1. Kunduppgifter & Fjärrvärmedata</h1>
+    <p>Mata in BRF/kund och fjärrvärmedata från senaste fakturan. Energipriset räknas i första hand från fakturan, men kan hämtas från kommunlistan eller anges manuellt. Allt flödar vidare till kalkylerna.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Kund</div></div>
+      <div class="field"><label>BRF / Företagsnamn</label><input type="text" id="kund-namn" placeholder="BRF Snälltorpet" oninput="onChange()"></div>
+      <div class="field"><label>Kontaktperson</label><input type="text" id="kund-kontakt" placeholder="Anna Lindström" oninput="onChange()"></div>
+      <div class="field"><label>Adress</label><input type="text" id="kund-adress" placeholder="Tunavallsgränden 2" oninput="onChange()"></div>
+      <div class="field"><label>Postnummer & Ort</label><input type="text" id="kund-ort" placeholder="632 23 Eskilstuna" oninput="onChange()"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Fastighet</div></div>
+      <div class="grid-2">
+        <div class="field"><label>Antal lägenheter</label><input type="number" id="data-antal-lgh" placeholder="30" oninput="onChange()"></div>
+        <div class="field">
+          <label>BOA / LOA <span class="help">m²</span></label>
+          <div class="input-suffix"><input type="number" id="data-boa" placeholder="1650" oninput="onChange()"><span class="suffix">m²</span></div>
+        </div>
+        <div class="field">
+          <label>Måltemp inomhus</label>
+          <div class="input-suffix"><input type="number" id="data-temp" value="22" step="0.5" oninput="onChange()"><span class="suffix">°C</span></div>
+        </div>
+        <div class="field">
+          <label>Värmeeffekt UC <span class="help">(valfritt)</span></label>
+          <div class="input-suffix"><input type="number" id="data-effekt" placeholder="120" oninput="onChange()"><span class="suffix">kW</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Fjärrvärmedata från faktura</div></div>
+    <div class="grid-3">
+      <div class="field">
+        <label>Total förbrukning <span class="help">kWh/år</span></label>
+        <div class="input-suffix"><input type="number" id="data-totalkwh" placeholder="240000" oninput="onChange()"><span class="suffix">kWh</span></div>
+      </div>
+      <div class="field">
+        <label>Total kostnad <span class="help">kr/år exkl. moms</span></label>
+        <div class="input-suffix"><input type="number" id="data-totalkr" placeholder="280000" oninput="onChange()"><span class="suffix">kr</span></div>
+      </div>
+      <div class="field">
+        <label><span class="tooltip-wrap">VV+VVC per månad <span class="help">från sommarmånad</span><span class="tooltip-icon" data-tip="Energi till tappvarmvatten + cirkulation. Avläs från faktura under sommarperiod (lägsta månaden)."></span></span></label>
+        <div class="input-suffix"><input type="number" id="data-vvmonth" placeholder="4000" oninput="onChange()"><span class="suffix">kWh</span></div>
+      </div>
+      <div class="field">
+        <label><span class="tooltip-wrap">Antagen besparing <span class="tooltip-icon" data-tip="Procentuell besparing av värmekWh. Typiskt 10–20% för välreglerade system."></span></span></label>
+        <div class="input-suffix"><input type="number" id="data-pct" value="15" min="5" max="40" oninput="onChange()"><span class="suffix">%</span></div>
+      </div>
+      <div class="field">
+        <label>Avtalstyp index</label>
+        <input type="text" id="data-index" value="3021-25 Teknikinstallationsavtalet">
+      </div>
+      <div class="field">
+        <label>År för fakturaunderlag</label>
+        <input type="number" id="data-ar" value="2026">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Energipris</div>
+        <div class="card-subtitle">Räknas automatiskt från fakturan. Hämta från kommun eller skriv in manuellt.</div>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="field">
+        <label>Aktivt energipris <span class="help">används i besparingen</span></label>
+        <div class="input-suffix"><input type="number" id="data-pris" value="0.85" step="0.01" min="0" oninput="onPrisInput()"><span class="suffix">kr/kWh</span></div>
+        <div class="pris-hint" id="pris-hint">Standard 0,85 kr/kWh</div>
+        <div class="price-source">
+          <span class="price-chip" id="chip-faktura" onclick="prisFromFaktura()">📄 Räkna från faktura</span>
+          <span class="price-chip" onclick="resetPris()">↺ Auto</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Hämta från kommun <span class="help">fjärrvärmepriser 2025</span></label>
+        <input type="text" id="kommun-select" list="kommun-list" placeholder="Sök kommun…" onchange="onKommunSelect()" oninput="onKommunSelect()">
+        <datalist id="kommun-list"></datalist>
+        <div class="pris-hint" id="kommun-info" style="color:var(--muted);font-weight:500"></div>
+      </div>
+      <div class="field">
+        <label><span class="tooltip-wrap">Specifik energi <span class="help">för kommun→kr/kWh</span><span class="tooltip-icon" data-tip="kWh/m² per år för typhuset. Nils Holgersson-referens ≈ 193 kWh/m²."></span></span></label>
+        <div class="input-suffix"><input type="number" id="data-specifik" value="193" step="1" min="50" oninput="onKommunSelect()"><span class="suffix">kWh/m²</span></div>
+        <div class="pris-hint" style="color:var(--muted);font-weight:400">Nils Holgersson-typhus ≈ 193</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Värme till system</div><div class="kpi-value" id="kpi-varme">–</div><div class="kpi-unit">kWh/år</div></div>
+    <div class="kpi"><div class="kpi-label">Energipris</div><div class="kpi-value" id="kpi-pris">–</div><div class="kpi-unit">kr/kWh</div></div>
+    <div class="kpi highlight"><div class="kpi-label">Bruttobesparing</div><div class="kpi-value" id="kpi-besparing">–</div><div class="kpi-unit">kr/år</div></div>
+    <div class="kpi"><div class="kpi-label">Tier (auto)</div><div class="kpi-value" id="kpi-tier">–</div><div class="kpi-unit">baserat på LGH</div></div>
+    <div class="kpi" style="border-color: var(--brv-green)"><div class="kpi-label">CO₂-besparing</div><div class="kpi-value" id="kpi-co2" style="color: var(--success)">–</div><div class="kpi-unit">ton CO₂/år</div></div>
+  </div>
+
+  <div class="panel-nav">
+    <div></div>
+    <button class="btn btn-primary" onclick="switchTab('matning')">Nästa: Mätning →</button>
+  </div>
+</div>
+
+<!-- ================= STEP 2: MÄTNING ================= -->
+<div class="panel" id="panel-matning">
+  <div class="hero">
+    <h1>2. Mätningskalkyl</h1>
+    <p>Räkna fram total kostnad för mätinstallationen. Rekommenderat pris = kostpris ÷ (1 − TG). Resultatet flödar automatiskt vidare till Smart Energikontroll och Proptech BOX.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Täckningsgrad (TG)</div>
+        <div class="card-subtitle">Marginal på försäljningspriset. Excel-standard 0,35</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label><span class="tooltip-wrap">TG <span class="help">default 0.35</span><span class="tooltip-icon" data-tip="Täckningsgrad = marginal på försäljningspriset. TG 0,35 innebär att kostpriset är 65% av säljpriset."></span></span></label>
+        <input type="number" id="m-tg" value="0.35" step="0.01" min="0.1" max="0.9" oninput="renderMatning()">
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <div style="display: flex; gap: 0.4rem; flex-wrap:wrap">
+          <button class="btn-icon" onclick="setTG(0.30)">0,30</button>
+          <button class="btn-icon" onclick="setTG(0.35)">0,35 (std)</button>
+          <button class="btn-icon" onclick="setTG(0.40)">0,40</button>
+          <button class="btn-icon" onclick="setTG(0.45)">0,45</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Mätningskomponenter</div>
+        <div class="card-subtitle">Sätt antal till 0 för poster som inte ingår</div>
+      </div>
+    </div>
+    <table class="matning-table" id="matning-table"></table>
+    <div class="matning-summary">
+      <div class="matning-summary-label">Pris till kund (Mätning total)</div>
+      <div class="matning-summary-val" id="matning-total">0 kr</div>
+    </div>
+  </div>
+
+  <div class="panel-nav">
+    <button class="btn btn-secondary" onclick="switchTab('kund')">← Tillbaka</button>
+    <button class="btn btn-primary" onclick="switchTab('energi')">Nästa: Smart Energikontroll →</button>
+  </div>
+</div>
+
+<!-- ================= STEP 3: SMART ENERGIKONTROLL ================= -->
+<div class="panel" id="panel-energi">
+  <div class="hero">
+    <h1>3. Kalkyl Smart Energikontroll (EBO)</h1>
+    <p>EBO-spåret med Smart Energikontroll. Mätningssumman flödar in automatiskt från steg 2.</p>
+  </div>
+
+  <div class="step-flow">
+    📡 Mätning från steg 2: <strong id="ek-matning-display">0 kr</strong> · 🏠 Antal LGH: <strong id="ek-lgh-display">0</strong> · ⚡ Energipris: <strong id="ek-pris-display">–</strong> · 💡 Tier: <strong id="ek-tier-display">–</strong>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Tier-val (Avtalstyp)</div>
+      <div class="card-subtitle">Auto-vald baserat på antal LGH – kan ändras</div>
+    </div>
+    <div class="tier-row">
+      <div class="tier" data-tier="small" onclick="selectTier('small')"><div class="tier-name">Small</div><div class="tier-range">&lt; 20 LGH</div><div class="tier-price">4 400 kr/år</div></div>
+      <div class="tier" data-tier="medium" onclick="selectTier('medium')"><div class="tier-name">Medium</div><div class="tier-range">20–49 LGH</div><div class="tier-price">8 780 kr/år</div></div>
+      <div class="tier" data-tier="large" onclick="selectTier('large')"><div class="tier-name">Large</div><div class="tier-range">50–79 LGH</div><div class="tier-price">15 700 kr/år</div></div>
+      <div class="tier" data-tier="xl" onclick="selectTier('xl')"><div class="tier-name">XL</div><div class="tier-range">≥ 80 LGH</div><div class="tier-price">23 540 kr/år</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Komponenter</div></div>
+    <table class="matning-table">
+      <thead><tr><th>Produkt</th><th style="width: 80px">Antal</th><th style="width: 110px; text-align:right">À-pris</th><th style="width: 120px; text-align:right">Summa</th></tr></thead>
+      <tbody id="energi-rows"></tbody>
+    </table>
+  </div>
+
+  <div class="summary-box">
+    <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; margin-bottom: 0.5rem">Smart Energikontroll – Sammanställning</div>
+    <div class="summary-row"><span>Lev och installation (engångskostnad)</span><span class="val" id="ek-engang">–</span></div>
+    <div class="summary-row"><span>Årskostnad Smart Energikontroll (SaaS)</span><span class="val" id="ek-saas">–</span></div>
+    <div class="summary-row total"><span>Total kostnad år 1</span><span class="val" id="ek-total">–</span></div>
+    <div class="summary-row" style="margin-top: 0.5rem; opacity: 0.95"><span>Bruttobesparing/år</span><span class="val" id="ek-besp">–</span></div>
+    <div class="summary-row"><span>Netto besparing/år (efter SaaS)</span><span class="val" id="ek-netto">–</span></div>
+    <div class="summary-row total" style="border-top-color: var(--gold)"><span>Payoff-tid (engång ÷ netto)</span><span class="val" id="ek-payoff">–</span></div>
+  </div>
+
+  <div class="panel-nav">
+    <button class="btn btn-secondary" onclick="switchTab('matning')">← Tillbaka</button>
+    <button class="btn btn-primary" onclick="switchTab('proptech')">Nästa: Proptech BOX →</button>
+  </div>
+</div>
+
+<!-- ================= STEP 4: PROPTECH BOX (BBO) ================= -->
+<div class="panel" id="panel-proptech">
+  <div class="hero">
+    <h1>4. Kalkyl Proptech BOX (BBO)</h1>
+    <p>BBO-spåret (Bravida Building Operation) med Proptech BOX Heat. Lämpligt när kund vill ha eget systemägande.</p>
+  </div>
+
+  <div class="step-flow">
+    📡 Mätning från steg 2: <strong id="pb-matning-display">0 kr</strong> · ⚡ Energipris: <strong id="pb-pris-display">–</strong> · 💡 Tier: <strong id="pb-tier-display">–</strong>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Komponenter</div></div>
+    <table class="matning-table">
+      <thead><tr><th>Produkt</th><th style="width: 80px">Antal</th><th style="width: 110px; text-align:right">À-pris</th><th style="width: 120px; text-align:right">Summa</th></tr></thead>
+      <tbody id="proptech-rows"></tbody>
+    </table>
+  </div>
+
+  <div class="summary-box">
+    <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.85; margin-bottom: 0.5rem">Proptech BOX (BBO) – Sammanställning</div>
+    <div class="summary-row"><span>Lev och installation (engångs)</span><span class="val" id="pb-engang">–</span></div>
+    <div class="summary-row"><span>Årskostnad BBO + Smart Energikontroll</span><span class="val" id="pb-saas">–</span></div>
+    <div class="summary-row"><span>Årskostnad BBO ink. datatrafik</span><span class="val" id="pb-data">–</span></div>
+    <div class="summary-row total"><span>Total kostnad år 1</span><span class="val" id="pb-total">–</span></div>
+    <div class="summary-row" style="margin-top: 0.5rem; opacity: 0.95"><span>Bruttobesparing/år</span><span class="val" id="pb-besp">–</span></div>
+    <div class="summary-row"><span>Netto besparing/år</span><span class="val" id="pb-netto">–</span></div>
+    <div class="summary-row total" style="border-top-color: var(--gold)"><span>Payoff-tid (engång ÷ netto)</span><span class="val" id="pb-payoff">–</span></div>
+  </div>
+
+  <div class="panel-nav">
+    <button class="btn btn-secondary" onclick="switchTab('energi')">← Tillbaka</button>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
+      <button class="btn btn-success btn-save-trigger" onclick="saveCustomer()">💾 Spara i register</button>
+      <button class="btn btn-primary" onclick="switchTab('anbud')">Generera anbud-PDF →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= STEP 5: JÄMFÖR EBO vs BBO ================= -->
+<div class="panel" id="panel-jamfor">
+  <div class="hero">
+    <h1>5. Jämför EBO vs BBO</h1>
+    <p>Sida-vid-sida jämförelse av Smart Energikontroll (EBO) och Proptech BOX (BBO) kalkyler.</p>
+  </div>
+  <div class="jamfor-grid" id="jamfor-grid">
+    <div class="empty-state"><p>Fyll i kund + fjärrvärmedata på steg 1 först.</p></div>
+  </div>
+  <div class="panel-nav">
+    <button class="btn btn-secondary" onclick="switchTab('proptech')">← Tillbaka</button>
+    <button class="btn btn-primary" onclick="switchTab('anbud')">Nästa: Anbud-PDF →</button>
+  </div>
+</div>
+
+<!-- ================= STEP 6: ANBUD-PDF ================= -->
+<div class="panel" id="panel-anbud">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title" style="font-size: 1rem">6. Anbud-PDF</div>
+        <div class="card-subtitle">Välj vilken kalkyl som ska ligga till grund för anbudet</div>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Tips:</strong> Smart Energikontroll-kalkylen passar oftast vid renodlad EBO-försäljning. Proptech BOX (BBO)-kalkylen passar när kunden vill ha eget systemägande.
+    </div>
+    <div class="product-toggle">
+      <div class="product-card selected" id="pdf-source-energi" onclick="selectPdfSource('energi')">
+        <div class="product-card-name">Smart Energikontroll (EBO)</div>
+        <div class="product-card-desc">Anbud baserat på Smart Energikontroll-kalkylen från steg 3</div>
+      </div>
+      <div class="product-card" id="pdf-source-proptech" onclick="selectPdfSource('proptech')">
+        <div class="product-card-name">Proptech BOX (BBO)</div>
+        <div class="product-card-desc">Anbud baserat på Proptech BOX-kalkylen från steg 4</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Bravida-uppgifter</div></div>
+    <div class="grid-3">
+      <div class="field"><label>Säljare</label><input type="text" id="b-namn" value="Jonis Awad" oninput="renderPDF()"></div>
+      <div class="field"><label>Telefon</label><input type="text" id="b-tel" placeholder="070-872 17 83" oninput="renderPDF()"></div>
+      <div class="field"><label>E-post</label><input type="text" id="b-epost" value="jonis.awad@bravida.se" oninput="renderPDF()"></div>
+      <div class="field"><label>Bravida-kontor</label><input type="text" id="b-ort" placeholder="Eskilstuna" oninput="renderPDF()"></div>
+      <div class="field"><label>Anbudsdatum</label><input type="date" id="b-datum" oninput="renderPDF()"></div>
+      <div class="field"><label>Giltig (dagar)</label>
+        <select id="b-giltig" onchange="renderPDF()">
+          <option value="30">30 dagar</option>
+          <option value="60">60 dagar</option>
+          <option value="90">90 dagar</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="pdf-actions">
+    <div style="font-size: 0.85rem; color: var(--muted)">
+      <strong style="color: var(--brv-darkblue)">Tips:</strong> Använd Chrome eller Edge. Aktivera "Bakgrundsgrafik" i utskriftsdialogen.
+    </div>
+    <button class="btn btn-primary" onclick="window.print()">📄 Ladda ner PDF</button>
+  </div>
+
+  <div class="pdf-preview" id="pdf-preview"></div>
+</div>
+
+<!-- ================= STEP 7: REGISTER ================= -->
+<div class="panel" id="panel-register">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title" style="font-size: 1rem">Kundregister</div>
+        <div class="card-subtitle">Alla räknade kunder och deras status</div>
+      </div>
+      <button class="btn-icon" onclick="exportRegister()">⬇ Exportera CSV</button>
+    </div>
+    <div id="register-content"></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ============================================
+// FJÄRRVÄRMEPRISER 2025 (Nils Holgersson, kr/m²·år)
+// ============================================
+const FJV = [{"lan":"Blekinge","kommun":"Karlshamn","foretag":"Karlshamn Energi AB","fjv":182.0,"krLgh":1009},{"lan":"Blekinge","kommun":"Karlskrona","foretag":"Affärsverken Karlskrona AB","fjv":248.0,"krLgh":1376},{"lan":"Blekinge","kommun":"Olofström","foretag":"Olofströms Kraft AB","fjv":222.0,"krLgh":1235},{"lan":"Blekinge","kommun":"Ronneby","foretag":"Ronneby Miljö och Teknik AB","fjv":232.0,"krLgh":1287},{"lan":"Blekinge","kommun":"Sölvesborg","foretag":"Sölvesborgs Energi och Vatten AB","fjv":245.0,"krLgh":1359},{"lan":"Dalarna","kommun":"Avesta","foretag":"Adven Sverige AB","fjv":276.4,"krLgh":1536},{"lan":"Dalarna","kommun":"Borlänge","foretag":"Borlänge Energi AB","fjv":221.7,"krLgh":1232},{"lan":"Dalarna","kommun":"Falun","foretag":"Falu Energi & Vatten AB","fjv":207.0,"krLgh":1149},{"lan":"Dalarna","kommun":"Gagnef","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Dalarna","kommun":"Hedemora","foretag":"Hedemora Energi AB","fjv":219.0,"krLgh":1217},{"lan":"Dalarna","kommun":"Leksand","foretag":"Adven Sverige AB","fjv":261.0,"krLgh":1450},{"lan":"Dalarna","kommun":"Ludvika","foretag":"Västerbergslagens Energi AB","fjv":228.0,"krLgh":1269},{"lan":"Dalarna","kommun":"Malung-Sälen","foretag":"Malung-Sälens kommun","fjv":156.0,"krLgh":864},{"lan":"Dalarna","kommun":"Mora","foretag":"Adven Sverige AB","fjv":271.0,"krLgh":1505},{"lan":"Dalarna","kommun":"Orsa","foretag":"Adven Sverige AB","fjv":277.0,"krLgh":1540},{"lan":"Dalarna","kommun":"Rättvik","foretag":"Adven Sverige AB","fjv":261.0,"krLgh":1450},{"lan":"Dalarna","kommun":"Smedjebacken","foretag":"Smedjebacken Energi AB","fjv":248.0,"krLgh":1379},{"lan":"Dalarna","kommun":"Säter","foretag":"Hedemora Energi AB","fjv":241.0,"krLgh":1340},{"lan":"Dalarna","kommun":"Vansbro","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":298.0,"krLgh":1657},{"lan":"Dalarna","kommun":"Älvdalen","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":314.0,"krLgh":1742},{"lan":"Gotland","kommun":"Gotland","foretag":"Gotlands Energi AB","fjv":237.0,"krLgh":1317},{"lan":"Gävleborg","kommun":"Bollnäs","foretag":"Bollnäs Energi AB","fjv":217.5,"krLgh":1208},{"lan":"Gävleborg","kommun":"Gävle","foretag":"Gävle Energi AB","fjv":163.0,"krLgh":903},{"lan":"Gävleborg","kommun":"Hofors","foretag":"Adven Sverige AB","fjv":240.0,"krLgh":1333},{"lan":"Gävleborg","kommun":"Hudiksvall","foretag":"Adven Sverige AB","fjv":285.0,"krLgh":1582},{"lan":"Gävleborg","kommun":"Ljusdal","foretag":"Ljusdal Energi AB","fjv":213.0,"krLgh":1181},{"lan":"Gävleborg","kommun":"Nordanstig","foretag":"Nordanstigs Fjärrvärme AB (Priser)","fjv":288.0,"krLgh":1600},{"lan":"Gävleborg","kommun":"Ockelbo","foretag":"Bionär Närvärme AB","fjv":216.0,"krLgh":1200},{"lan":"Gävleborg","kommun":"Ovanåker","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":295.0,"krLgh":1636},{"lan":"Gävleborg","kommun":"Sandviken","foretag":"Sandviken Energi AB","fjv":193.0,"krLgh":1070},{"lan":"Gävleborg","kommun":"Söderhamn","foretag":"Söderhamn Nära AB","fjv":224.0,"krLgh":1244},{"lan":"Halland","kommun":"Falkenberg","foretag":"Falkenberg Energi AB","fjv":243.8,"krLgh":1354},{"lan":"Halland","kommun":"Halmstad","foretag":"Halmstads Energi och Miljö AB","fjv":186.0,"krLgh":1035},{"lan":"Halland","kommun":"Hylte","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Halland","kommun":"Kungsbacka","foretag":"Statkraft Värme AB","fjv":271.0,"krLgh":1507},{"lan":"Halland","kommun":"Laholm","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Halland","kommun":"Varberg","foretag":"Varberg Energi AB","fjv":227.0,"krLgh":1259},{"lan":"Jämtland","kommun":"Berg","foretag":"BTEA Energi AB","fjv":223.3,"krLgh":1241},{"lan":"Jämtland","kommun":"Bräcke","foretag":"Adven Sverige AB","fjv":285.6,"krLgh":1587},{"lan":"Jämtland","kommun":"Härjedalen","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":297.0,"krLgh":1648},{"lan":"Jämtland","kommun":"Krokom","foretag":"Jämtkraft AB","fjv":216.0,"krLgh":1201},{"lan":"Jämtland","kommun":"Ragunda","foretag":"Ragunda Energi och Teknik AB (Priser)","fjv":266.0,"krLgh":1476},{"lan":"Jämtland","kommun":"Strömsund","foretag":"Strömsunds energi AB","fjv":253.0,"krLgh":1404},{"lan":"Jämtland","kommun":"Åre","foretag":"Jämtkraft AB","fjv":216.0,"krLgh":1201},{"lan":"Jämtland","kommun":"Östersund","foretag":"Jämtkraft AB","fjv":206.0,"krLgh":1147},{"lan":"Jönköping","kommun":"Aneby","foretag":"Aneby Miljö & Vatten AB","fjv":259.2,"krLgh":1440},{"lan":"Jönköping","kommun":"Eksjö","foretag":"Eksjö Energi AB","fjv":213.0,"krLgh":1183},{"lan":"Jönköping","kommun":"Gislaved","foretag":"Gislaved Energi AB","fjv":208.0,"krLgh":1154},{"lan":"Jönköping","kommun":"Gnosjö","foretag":"Nevel AB","fjv":243.0,"krLgh":1348},{"lan":"Jönköping","kommun":"Habo","foretag":"Habo Energi AB","fjv":218.0,"krLgh":1212},{"lan":"Jönköping","kommun":"Jönköping","foretag":"Jönköping Energi AB","fjv":198.0,"krLgh":1099},{"lan":"Jönköping","kommun":"Mullsjö","foretag":"Mullsjö Energi & Miljö AB","fjv":297.0,"krLgh":1648},{"lan":"Jönköping","kommun":"Nässjö","foretag":"Nässjö Affärsverk AB","fjv":193.0,"krLgh":1074},{"lan":"Jönköping","kommun":"Sävsjö","foretag":"Njudung Energi Sävsjö AB","fjv":224.0,"krLgh":1242},{"lan":"Jönköping","kommun":"Tranås","foretag":"Tranås Energi AB","fjv":222.0,"krLgh":1234},{"lan":"Jönköping","kommun":"Vaggeryd","foretag":"Vaggeryds Energi AB","fjv":249.0,"krLgh":1385},{"lan":"Jönköping","kommun":"Vetlanda","foretag":"Njudung Energi Vetlanda AB","fjv":197.0,"krLgh":1093},{"lan":"Jönköping","kommun":"Värnamo","foretag":"Värnamo Energi AB","fjv":227.0,"krLgh":1259},{"lan":"Kalmar","kommun":"Borgholm","foretag":"Borgholm Energi AB","fjv":243.1,"krLgh":1350},{"lan":"Kalmar","kommun":"Emmaboda","foretag":"Emmaboda Energi och Miljö AB","fjv":215.8,"krLgh":1199},{"lan":"Kalmar","kommun":"Hultsfred","foretag":"Nevel AB","fjv":271.0,"krLgh":1506},{"lan":"Kalmar","kommun":"Högsby","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Kalmar","kommun":"Kalmar","foretag":"Kalmar Energi Värme AB","fjv":223.0,"krLgh":1237},{"lan":"Kalmar","kommun":"Mönsterås","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":255.0,"krLgh":1417},{"lan":"Kalmar","kommun":"Mörbylånga","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":255.0,"krLgh":1417},{"lan":"Kalmar","kommun":"Nybro","foretag":"Nybro Energi AB","fjv":225.0,"krLgh":1252},{"lan":"Kalmar","kommun":"Oskarshamn","foretag":"Oskarshamn Energi AB","fjv":248.0,"krLgh":1375},{"lan":"Kalmar","kommun":"Torsås","foretag":"Torsnet AB","fjv":232.0,"krLgh":1288},{"lan":"Kalmar","kommun":"Vimmerby","foretag":"Vimmerby Energi & Miljö AB","fjv":247.0,"krLgh":1373},{"lan":"Kalmar","kommun":"Västervik","foretag":"Västervik Miljö & Energi AB","fjv":262.0,"krLgh":1455},{"lan":"Kronoberg","kommun":"Alvesta","foretag":"Alvesta Energi AB","fjv":239.3,"krLgh":1329},{"lan":"Kronoberg","kommun":"Lessebo","foretag":"Lessebo Fjärrvärme AB","fjv":279.0,"krLgh":1552},{"lan":"Kronoberg","kommun":"Ljungby","foretag":"Ljungby Energi AB","fjv":166.0,"krLgh":924},{"lan":"Kronoberg","kommun":"Markaryd","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":272.0,"krLgh":1513},{"lan":"Kronoberg","kommun":"Tingsryd","foretag":"Tingsryds Energi AB","fjv":226.0,"krLgh":1253},{"lan":"Kronoberg","kommun":"Uppvidinge","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":263.0,"krLgh":1463},{"lan":"Kronoberg","kommun":"Växjö","foretag":"Växjö Energi AB","fjv":220.0,"krLgh":1220},{"lan":"Kronoberg","kommun":"Älmhult","foretag":"Adven Sverige AB","fjv":283.0,"krLgh":1570},{"lan":"Norrbotten","kommun":"Arjeplog","foretag":"Arjeplog kommun","fjv":207.5,"krLgh":1153},{"lan":"Norrbotten","kommun":"Arvidsjaur","foretag":"Arvidsjaurs Energi AB","fjv":203.6,"krLgh":1131},{"lan":"Norrbotten","kommun":"Boden","foretag":"Bodens Energi AB","fjv":171.4,"krLgh":952},{"lan":"Norrbotten","kommun":"Gällivare","foretag":"Gällivare Energi AB","fjv":254.0,"krLgh":1410},{"lan":"Norrbotten","kommun":"Haparanda","foretag":"Haparanda Värmeverk AB","fjv":228.0,"krLgh":1267},{"lan":"Norrbotten","kommun":"Jokkmokk","foretag":"Jokkmokks Värmeverk AB","fjv":223.0,"krLgh":1237},{"lan":"Norrbotten","kommun":"Kalix","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":291.0,"krLgh":1618},{"lan":"Norrbotten","kommun":"Kiruna","foretag":"Kiruna Kraft AB","fjv":232.0,"krLgh":1292},{"lan":"Norrbotten","kommun":"Luleå","foretag":"Luleå Energi AB","fjv":135.0,"krLgh":749},{"lan":"Norrbotten","kommun":"Pajala","foretag":"Pajala Värmeverk AB","fjv":254.0,"krLgh":1412},{"lan":"Norrbotten","kommun":"Piteå","foretag":"PiteEnergi AB","fjv":158.0,"krLgh":878},{"lan":"Norrbotten","kommun":"Älvsbyn","foretag":"Älvsbyns Energi AB","fjv":233.0,"krLgh":1296},{"lan":"Norrbotten","kommun":"Överkalix","foretag":"Överkalix Värmeverk","fjv":287.0,"krLgh":1595},{"lan":"Norrbotten","kommun":"Övertorneå","foretag":"Övertorneå Värmeverk AB","fjv":216.0,"krLgh":1202},{"lan":"Skåne","kommun":"Bjuv","foretag":"Nevel AB","fjv":267.7,"krLgh":1487},{"lan":"Skåne","kommun":"Bromölla","foretag":"Bromölla Energi & Vatten","fjv":246.1,"krLgh":1367},{"lan":"Skåne","kommun":"Burlöv","foretag":"E.ON Energiinfrastruktur AB","fjv":224.5,"krLgh":1247},{"lan":"Skåne","kommun":"Båstad","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Skåne","kommun":"Eslöv","foretag":"Kraftringen Energi AB (publ)","fjv":243.8,"krLgh":1355},{"lan":"Skåne","kommun":"Helsingborg","foretag":"Öresundskraft AB","fjv":194.0,"krLgh":1080},{"lan":"Skåne","kommun":"Hässleholm","foretag":"Hässleholm Miljö AB","fjv":228.0,"krLgh":1267},{"lan":"Skåne","kommun":"Höganäs","foretag":"Höganäs Energi AB","fjv":203.0,"krLgh":1126},{"lan":"Skåne","kommun":"Hörby","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":297.0,"krLgh":1648},{"lan":"Skåne","kommun":"Höör","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":297.0,"krLgh":1648},{"lan":"Skåne","kommun":"Klippan","foretag":"Kraftringen Energi AB (publ)","fjv":244.0,"krLgh":1355},{"lan":"Skåne","kommun":"Kristianstad","foretag":"C4 Energi AB","fjv":227.0,"krLgh":1260},{"lan":"Skåne","kommun":"Kävlinge","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Skåne","kommun":"Landskrona","foretag":"Landskrona Energi AB","fjv":199.0,"krLgh":1104},{"lan":"Skåne","kommun":"Lomma","foretag":"Kraftringen Energi AB (publ)","fjv":244.0,"krLgh":1355},{"lan":"Skåne","kommun":"Lund","foretag":"Kraftringen Energi AB (publ)","fjv":244.0,"krLgh":1355},{"lan":"Skåne","kommun":"Malmö","foretag":"E.ON Energiinfrastruktur AB","fjv":224.0,"krLgh":1247},{"lan":"Skåne","kommun":"Osby","foretag":"Fjärrvärme i Osby AB","fjv":213.0,"krLgh":1185},{"lan":"Skåne","kommun":"Perstorp","foretag":"Perstorps Fjärrvärme AB","fjv":211.0,"krLgh":1170},{"lan":"Skåne","kommun":"Simrishamn","foretag":"Adven Sverige AB","fjv":255.0,"krLgh":1416},{"lan":"Skåne","kommun":"Sjöbo","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":297.0,"krLgh":1648},{"lan":"Skåne","kommun":"Skurup","foretag":"Solör Bioenergi Agrovärme AB","fjv":295.0,"krLgh":1640},{"lan":"Skåne","kommun":"Staffanstorp","foretag":"Adven Sverige AB","fjv":268.0,"krLgh":1488},{"lan":"Skåne","kommun":"Svalöv","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":295.0,"krLgh":1637},{"lan":"Skåne","kommun":"Svedala","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":260.0,"krLgh":1443},{"lan":"Skåne","kommun":"Tomelilla","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":297.0,"krLgh":1648},{"lan":"Skåne","kommun":"Trelleborg","foretag":"Trelleborgs Energi AB","fjv":258.0,"krLgh":1435},{"lan":"Skåne","kommun":"Vellinge","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Skåne","kommun":"Ystad","foretag":"Ystad Energi AB","fjv":222.0,"krLgh":1235},{"lan":"Skåne","kommun":"Åstorp","foretag":"Nevel AB","fjv":268.0,"krLgh":1487},{"lan":"Skåne","kommun":"Ängelholm","foretag":"Öresundskraft AB","fjv":203.0,"krLgh":1128},{"lan":"Skåne","kommun":"Örkelljunga","foretag":"Örkelljunga Fjärrvärmeverk AB","fjv":243.0,"krLgh":1351},{"lan":"Skåne","kommun":"Östra Göinge","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":295.0,"krLgh":1637},{"lan":"Stockholm","kommun":"Botkyrka","foretag":"Södertörns Fjärrvärme AB","fjv":225.6,"krLgh":1254},{"lan":"Stockholm","kommun":"Danderyd","foretag":"Norrenergi AB","fjv":210.9,"krLgh":1171},{"lan":"Stockholm","kommun":"Ekerö","foretag":"Ekerö Solör Bioenergi AB","fjv":266.2,"krLgh":1479},{"lan":"Stockholm","kommun":"Haninge","foretag":"Vattenfall AB","fjv":241.0,"krLgh":1339},{"lan":"Stockholm","kommun":"Huddinge","foretag":"Södertörns Fjärrvärme AB","fjv":226.0,"krLgh":1254},{"lan":"Stockholm","kommun":"Järfälla","foretag":"E.ON Energiinfrastruktur AB","fjv":227.0,"krLgh":1263},{"lan":"Stockholm","kommun":"Lidingö","foretag":"Stockholm Exergi AB","fjv":242.0,"krLgh":1344},{"lan":"Stockholm","kommun":"Nacka","foretag":"Stockholm Exergi AB","fjv":242.0,"krLgh":1344},{"lan":"Stockholm","kommun":"Norrtälje","foretag":"Norrtälje Energi AB","fjv":215.0,"krLgh":1193},{"lan":"Stockholm","kommun":"Nykvarn","foretag":"Telge Nät AB","fjv":213.0,"krLgh":1185},{"lan":"Stockholm","kommun":"Nynäshamn","foretag":"Adven Sverige AB","fjv":279.0,"krLgh":1549},{"lan":"Stockholm","kommun":"Salem","foretag":"Södertörns Fjärrvärme AB","fjv":226.0,"krLgh":1254},{"lan":"Stockholm","kommun":"Sigtuna","foretag":"Stockholm Exergi AB","fjv":242.0,"krLgh":1344},{"lan":"Stockholm","kommun":"Sollentuna","foretag":"Sollentuna Energi & Miljö AB","fjv":210.0,"krLgh":1169},{"lan":"Stockholm","kommun":"Solna","foretag":"Norrenergi AB","fjv":211.0,"krLgh":1171},{"lan":"Stockholm","kommun":"Stockholm","foretag":"Stockholm Exergi AB","fjv":242.0,"krLgh":1344},{"lan":"Stockholm","kommun":"Sundbyberg","foretag":"Norrenergi AB","fjv":211.0,"krLgh":1171},{"lan":"Stockholm","kommun":"Södertälje","foretag":"Telge Nät AB","fjv":213.0,"krLgh":1185},{"lan":"Stockholm","kommun":"Tyresö","foretag":"Vattenfall AB","fjv":241.0,"krLgh":1339},{"lan":"Stockholm","kommun":"Täby","foretag":"Täby Miljövärme AB (TMAB)","fjv":256.0,"krLgh":1422},{"lan":"Stockholm","kommun":"Upplands Bro","foretag":"E.ON Energiinfrastruktur AB","fjv":227.0,"krLgh":1263},{"lan":"Stockholm","kommun":"Upplands Väsby","foretag":"Stockholm Exergi AB","fjv":242.0,"krLgh":1344},{"lan":"Stockholm","kommun":"Vallentuna","foretag":"E.ON Energiinfrastruktur AB","fjv":226.0,"krLgh":1258},{"lan":"Stockholm","kommun":"Vaxholm","foretag":"Adven Sverige AB","fjv":277.0,"krLgh":1540},{"lan":"Stockholm","kommun":"Värmdö","foretag":"Vattenfall AB","fjv":239.0,"krLgh":1325},{"lan":"Stockholm","kommun":"Österåker","foretag":"E.ON Energiinfrastruktur AB","fjv":231.0,"krLgh":1281},{"lan":"Södermanland","kommun":"Eskilstuna","foretag":"Eskilstuna Energi & Miljö AB","fjv":212.8,"krLgh":1182},{"lan":"Södermanland","kommun":"Flen","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":288.0,"krLgh":1598},{"lan":"Södermanland","kommun":"Gnesta","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":290.0,"krLgh":1614},{"lan":"Södermanland","kommun":"Katrineholm","foretag":"Tekniska Verken i Linköping AB","fjv":217.0,"krLgh":1206},{"lan":"Södermanland","kommun":"Nyköping","foretag":"Vattenfall AB","fjv":238.0,"krLgh":1322},{"lan":"Södermanland","kommun":"Oxelösund","foretag":"Oxelö Energi AB","fjv":156.0,"krLgh":866},{"lan":"Södermanland","kommun":"Strängnäs","foretag":"Solör Bioenergi Strängnäs AB","fjv":263.0,"krLgh":1462},{"lan":"Södermanland","kommun":"Trosa","foretag":"Statkraft Värme AB","fjv":277.0,"krLgh":1539},{"lan":"Södermanland","kommun":"Vingåker","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":292.0,"krLgh":1624},{"lan":"Uppsala","kommun":"Enköping","foretag":"Ena Energi AB","fjv":272.3,"krLgh":1513},{"lan":"Uppsala","kommun":"Heby","foretag":"Sala-Heby Energi AB","fjv":281.0,"krLgh":1561},{"lan":"Uppsala","kommun":"Håbo","foretag":"E.ON Energiinfrastruktur AB","fjv":227.0,"krLgh":1263},{"lan":"Uppsala","kommun":"Knivsta","foretag":"Vattenfall AB","fjv":239.0,"krLgh":1326},{"lan":"Uppsala","kommun":"Tierp","foretag":"Tierps Fjärrvärme AB","fjv":238.0,"krLgh":1320},{"lan":"Uppsala","kommun":"Uppsala","foretag":"Vattenfall AB","fjv":240.0,"krLgh":1331},{"lan":"Uppsala","kommun":"Älvkarleby","foretag":"Bionär Närvärme AB","fjv":167.0,"krLgh":929},{"lan":"Uppsala","kommun":"Östhammar","foretag":"Nevel AB","fjv":259.0,"krLgh":1440},{"lan":"Värmlands län","kommun":"Arvika","foretag":"Arvika Fjärrvärme AB","fjv":205.9,"krLgh":1144},{"lan":"Värmlands län","kommun":"Eda","foretag":"Eda Energi AB","fjv":225.6,"krLgh":1254},{"lan":"Värmlands län","kommun":"Filipstad","foretag":"Filipstads Värme AB","fjv":259.0,"krLgh":1438},{"lan":"Värmlands län","kommun":"Forshaga","foretag":"Forshaga Energi AB","fjv":241.0,"krLgh":1338},{"lan":"Värmlands län","kommun":"Grums","foretag":"Adven Sverige AB","fjv":266.0,"krLgh":1479},{"lan":"Värmlands län","kommun":"Hagfors","foretag":"Hagfors Energi","fjv":219.0,"krLgh":1217},{"lan":"Värmlands län","kommun":"Hammarö","foretag":"Hammarö Energi AB","fjv":231.0,"krLgh":1281},{"lan":"Värmlands län","kommun":"Karlstad","foretag":"Karlstads Energi AB","fjv":197.0,"krLgh":1093},{"lan":"Värmlands län","kommun":"Kil","foretag":"Kils Energi AB","fjv":198.0,"krLgh":1099},{"lan":"Värmlands län","kommun":"Kristinehamn","foretag":"Adven Sverige AB","fjv":253.0,"krLgh":1408},{"lan":"Värmlands län","kommun":"Munkfors","foretag":"Munkfors Energi AB","fjv":177.0,"krLgh":983},{"lan":"Värmlands län","kommun":"Storfors","foretag":"Filipstads Värme AB","fjv":285.0,"krLgh":1585},{"lan":"Värmlands län","kommun":"Sunne","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":291.0,"krLgh":1617},{"lan":"Värmlands län","kommun":"Säffle","foretag":"Adven Sverige AB","fjv":287.0,"krLgh":1593},{"lan":"Värmlands län","kommun":"Torsby","foretag":"Adven Sverige AB","fjv":266.0,"krLgh":1479},{"lan":"Värmlands län","kommun":"Årjäng","foretag":"Nevel AB","fjv":248.0,"krLgh":1380},{"lan":"Västerbotten","kommun":"Bjurholm","foretag":"Umeå Energi AB","fjv":216.2,"krLgh":1201},{"lan":"Västerbotten","kommun":"Dorotea","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":299.8,"krLgh":1665},{"lan":"Västerbotten","kommun":"Lycksele","foretag":"Skellefteå Kraft AB","fjv":179.0,"krLgh":993},{"lan":"Västerbotten","kommun":"Malå","foretag":"Skellefteå Kraft AB","fjv":178.0,"krLgh":988},{"lan":"Västerbotten","kommun":"Nordmaling","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":303.0,"krLgh":1681},{"lan":"Västerbotten","kommun":"Norsjö","foretag":"Skellefteå Kraft AB","fjv":190.0,"krLgh":1053},{"lan":"Västerbotten","kommun":"Robertsfors","foretag":"Skellefteå Kraft AB","fjv":190.0,"krLgh":1055},{"lan":"Västerbotten","kommun":"Skellefteå","foretag":"Skellefteå Kraft AB","fjv":178.0,"krLgh":992},{"lan":"Västerbotten","kommun":"Sorsele","foretag":"Sorsele Värmeverk AB","fjv":179.0,"krLgh":997},{"lan":"Västerbotten","kommun":"Storuman","foretag":"Skellefteå Kraft AB","fjv":188.0,"krLgh":1043},{"lan":"Västerbotten","kommun":"Umeå","foretag":"Umeå Energi AB","fjv":191.0,"krLgh":1064},{"lan":"Västerbotten","kommun":"Vilhelmina","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":304.0,"krLgh":1687},{"lan":"Västerbotten","kommun":"Vindeln","foretag":"Skellefteå Kraft AB","fjv":189.0,"krLgh":1050},{"lan":"Västerbotten","kommun":"Vännäs","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":304.0,"krLgh":1688},{"lan":"Västerbotten","kommun":"Åsele","foretag":"Åsele Energi AB","fjv":237.0,"krLgh":1318},{"lan":"Västernorrland","kommun":"Härnösand","foretag":"Härnösand Energi & Miljö AB","fjv":206.0,"krLgh":1144},{"lan":"Västernorrland","kommun":"Kramfors","foretag":"Nevel AB","fjv":261.0,"krLgh":1448},{"lan":"Västernorrland","kommun":"Sollefteå","foretag":"Adven Sverige AB","fjv":264.0,"krLgh":1466},{"lan":"Västernorrland","kommun":"Sundsvall","foretag":"Sundsvall Energi AB","fjv":182.0,"krLgh":1010},{"lan":"Västernorrland","kommun":"Timrå","foretag":"Adven Sverige AB","fjv":256.0,"krLgh":1422},{"lan":"Västernorrland","kommun":"Ånge","foretag":"Ånge Energi AB","fjv":231.0,"krLgh":1282},{"lan":"Västernorrland","kommun":"Örnsköldsvik","foretag":"Övik Energi AB","fjv":214.0,"krLgh":1189},{"lan":"Västmanland","kommun":"Arboga","foretag":"Västra Mälardalens Energi och Miljö AB","fjv":199.7,"krLgh":1110},{"lan":"Västmanland","kommun":"Fagersta","foretag":"Västerbergslagens Energi AB","fjv":228.4,"krLgh":1269},{"lan":"Västmanland","kommun":"Hallstahammar","foretag":"Mälarenergi AB","fjv":212.0,"krLgh":1176},{"lan":"Västmanland","kommun":"Kungsör","foretag":"Mälarenergi AB","fjv":220.0,"krLgh":1220},{"lan":"Västmanland","kommun":"Köping","foretag":"Västra Mälardalens Energi och Miljö AB","fjv":175.0,"krLgh":975},{"lan":"Västmanland","kommun":"Norberg","foretag":"Västerbergslagens Energi AB","fjv":228.0,"krLgh":1269},{"lan":"Västmanland","kommun":"Sala","foretag":"Sala-Heby Energi AB","fjv":262.0,"krLgh":1453},{"lan":"Västmanland","kommun":"Skinnskatteberg","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":303.0,"krLgh":1682},{"lan":"Västmanland","kommun":"Surahammar","foretag":"Mälarenergi AB","fjv":231.0,"krLgh":1284},{"lan":"Västmanland","kommun":"Västerås","foretag":"Mälarenergi AB","fjv":212.0,"krLgh":1176},{"lan":"Västra Götaland","kommun":"Ale","foretag":"Solör Bioenergi Ale","fjv":210.2,"krLgh":1168},{"lan":"Västra Götaland","kommun":"Alingsås","foretag":"Alingsås Energi  AB","fjv":259.2,"krLgh":1440},{"lan":"Västra Götaland","kommun":"Bengtsfors","foretag":"Bengtsfors Energi","fjv":275.2,"krLgh":1529},{"lan":"Västra Götaland","kommun":"Bollebygd","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":305.7,"krLgh":1698},{"lan":"Västra Götaland","kommun":"Borås","foretag":"Borås Energi & Miljö AB","fjv":210.1,"krLgh":1167},{"lan":"Västra Götaland","kommun":"Dals Ed","foretag":"Solör Bioenergi Agrovärme AB","fjv":305.8,"krLgh":1699},{"lan":"Västra Götaland","kommun":"Essunga","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Västra Götaland","kommun":"Falköping","foretag":"Solör Bioenergi Falköping AB","fjv":274.0,"krLgh":1524},{"lan":"Västra Götaland","kommun":"Färgelanda","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Västra Götaland","kommun":"Grästorp","foretag":"Solör Bioenergi Agrovärme AB","fjv":299.0,"krLgh":1659},{"lan":"Västra Götaland","kommun":"Gullspång","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Västra Götaland","kommun":"Göteborg","foretag":"Göteborg Energi AB","fjv":197.0,"krLgh":1092},{"lan":"Västra Götaland","kommun":"Götene","foretag":"Götene Vatten & Värme AB","fjv":206.0,"krLgh":1142},{"lan":"Västra Götaland","kommun":"Herrljunga","foretag":"Herrljunga Elektriska AB","fjv":247.0,"krLgh":1374},{"lan":"Västra Götaland","kommun":"Hjo","foretag":"Hjo Energi AB","fjv":205.0,"krLgh":1137},{"lan":"Västra Götaland","kommun":"Härryda","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":313.0,"krLgh":1739},{"lan":"Västra Götaland","kommun":"Karlsborg","foretag":"Karlsborgs Värme AB","fjv":215.0,"krLgh":1195},{"lan":"Västra Götaland","kommun":"Kungälv","foretag":"Kungälv Energi AB","fjv":234.0,"krLgh":1298},{"lan":"Västra Götaland","kommun":"Lerum","foretag":"Lerum Fjärrvärme AB","fjv":270.0,"krLgh":1498},{"lan":"Västra Götaland","kommun":"Lidköping","foretag":"Lidköping Energi AB","fjv":210.0,"krLgh":1169},{"lan":"Västra Götaland","kommun":"Lilla Edet","foretag":"Lilla Edets Fjärrvärme AB","fjv":208.0,"krLgh":1155},{"lan":"Västra Götaland","kommun":"Lysekil","foretag":"LEVA i Lysekil AB","fjv":173.0,"krLgh":962},{"lan":"Västra Götaland","kommun":"Mariestad","foretag":"VänerEnergi AB","fjv":216.0,"krLgh":1200},{"lan":"Västra Götaland","kommun":"Mark","foretag":"Marks Energi AB","fjv":239.0,"krLgh":1330},{"lan":"Västra Götaland","kommun":"Mellerud","foretag":"Melleruds kommun","fjv":239.0,"krLgh":1330},{"lan":"Västra Götaland","kommun":"Munkedal","foretag":"Uddevalla Energi AB","fjv":244.0,"krLgh":1358},{"lan":"Västra Götaland","kommun":"Mölndal","foretag":"Mölndal Energi AB","fjv":200.0,"krLgh":1111},{"lan":"Västra Götaland","kommun":"Orust","foretag":"Nevel AB","fjv":262.0,"krLgh":1456},{"lan":"Västra Götaland","kommun":"Partille","foretag":"Partille Energi AB","fjv":193.0,"krLgh":1075},{"lan":"Västra Götaland","kommun":"Skara","foretag":"Skara Energi AB","fjv":181.0,"krLgh":1008},{"lan":"Västra Götaland","kommun":"Skövde","foretag":"Skövde Energi AB","fjv":189.0,"krLgh":1051},{"lan":"Västra Götaland","kommun":"Sotenäs","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Västra Götaland","kommun":"Stenungsund","foretag":"Stenungsunds Energi och Miljö AB","fjv":158.0,"krLgh":879},{"lan":"Västra Götaland","kommun":"Strömstad","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Västra Götaland","kommun":"Svenljunga","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":251.0,"krLgh":1396},{"lan":"Västra Götaland","kommun":"Tanum","foretag":"Nevel AB","fjv":270.0,"krLgh":1497},{"lan":"Västra Götaland","kommun":"Tibro","foretag":"Nevel AB","fjv":260.0,"krLgh":1445},{"lan":"Västra Götaland","kommun":"Tidaholm","foretag":"Tidaholms Energi AB","fjv":176.0,"krLgh":976},{"lan":"Västra Götaland","kommun":"Tjörn","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Västra Götaland","kommun":"Tranemo","foretag":"Tranemo Kommun","fjv":200.0,"krLgh":1112},{"lan":"Västra Götaland","kommun":"Trollhättan","foretag":"Trollhättan Energi AB","fjv":210.0,"krLgh":1167},{"lan":"Västra Götaland","kommun":"Töreboda","foretag":"VänerEnergi AB","fjv":216.0,"krLgh":1200},{"lan":"Västra Götaland","kommun":"Uddevalla","foretag":"Uddevalla Energi AB","fjv":206.0,"krLgh":1146},{"lan":"Västra Götaland","kommun":"Ulricehamn","foretag":"Ulricehamns Energi AB","fjv":224.0,"krLgh":1243},{"lan":"Västra Götaland","kommun":"Vara","foretag":"Vara Energi Värme AB","fjv":193.0,"krLgh":1071},{"lan":"Västra Götaland","kommun":"Vårgårda","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":297.0,"krLgh":1649},{"lan":"Västra Götaland","kommun":"Vänersborg","foretag":"Vattenfall AB","fjv":229.0,"krLgh":1271},{"lan":"Västra Götaland","kommun":"Åmål","foretag":"Statkraft Värme AB","fjv":283.0,"krLgh":1572},{"lan":"Västra Götaland","kommun":"Öckerö","foretag":"","fjv":0.0,"krLgh":0},{"lan":"Örebro","kommun":"Askersund","foretag":"Vattenfall AB","fjv":237.8,"krLgh":1321},{"lan":"Örebro","kommun":"Degerfors","foretag":"Degerfors Energi AB","fjv":260.1,"krLgh":1445},{"lan":"Örebro","kommun":"Hallsberg","foretag":"Navirum Energi AB","fjv":219.0,"krLgh":1217},{"lan":"Örebro","kommun":"Hällefors","foretag":"Adven Sverige AB","fjv":287.0,"krLgh":1595},{"lan":"Örebro","kommun":"Karlskoga","foretag":"Karlskoga Kraftvärmeverk AB","fjv":239.0,"krLgh":1325},{"lan":"Örebro","kommun":"Kumla","foretag":"Navirum Energi AB","fjv":219.0,"krLgh":1217},{"lan":"Örebro","kommun":"Laxå","foretag":"Laxå Värme AB","fjv":224.0,"krLgh":1244},{"lan":"Örebro","kommun":"Lekeberg","foretag":"Lekeberg Bioenergi AB (Priser)","fjv":222.0,"krLgh":1231},{"lan":"Örebro","kommun":"Lindesberg","foretag":"Linde Energi AB","fjv":203.0,"krLgh":1129},{"lan":"Örebro","kommun":"Ljusnarsberg","foretag":"Adven Sverige AB","fjv":287.0,"krLgh":1595},{"lan":"Örebro","kommun":"Nora","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":310.0,"krLgh":1722},{"lan":"Örebro","kommun":"Örebro","foretag":"Navirum Energi AB","fjv":219.0,"krLgh":1217},{"lan":"Östergötland","kommun":"Boxholm","foretag":"Adven Sverige AB","fjv":282.6,"krLgh":1570},{"lan":"Östergötland","kommun":"Finspång","foretag":"Finspångs Tekniska Verk AB","fjv":212.0,"krLgh":1178},{"lan":"Östergötland","kommun":"Kinda","foretag":"Tekniska Verken i Linköping AB","fjv":213.0,"krLgh":1183},{"lan":"Östergötland","kommun":"Linköping","foretag":"Tekniska Verken i Linköping AB","fjv":200.0,"krLgh":1109},{"lan":"Östergötland","kommun":"Mjölby","foretag":"Mjölby-Svartådalen Energi AB","fjv":210.0,"krLgh":1166},{"lan":"Östergötland","kommun":"Motala","foretag":"Vattenfall AB","fjv":238.0,"krLgh":1321},{"lan":"Östergötland","kommun":"Norrköping","foretag":"Navirum Energi AB","fjv":214.0,"krLgh":1187},{"lan":"Östergötland","kommun":"Söderköping","foretag":"Navirum Energi AB","fjv":214.0,"krLgh":1187},{"lan":"Östergötland","kommun":"Vadstena","foretag":"Solör Bioenergi Fjärrvärme AB","fjv":252.0,"krLgh":1399},{"lan":"Östergötland","kommun":"Valdemarsvik","foretag":"Nevel AB","fjv":276.0,"krLgh":1533},{"lan":"Östergötland","kommun":"Ydre","foretag":"Ydre Kommun","fjv":263.0,"krLgh":1464},{"lan":"Östergötland","kommun":"Åtvidaberg","foretag":"Tekniska Verken i Linköping AB","fjv":209.0,"krLgh":1161},{"lan":"Östergötland","kommun":"Ödeshög","foretag":"Solör Bioenergi Agrovärme AB","fjv":281.0,"krLgh":1562}];
+
+// ============================================
+// PRISER (kostpriser SEK) – Kalkylrev 2026-05-11
+// ============================================
+const TG_DEFAULT = 0.35;
+const COST = {
+  tempSensor: 460, tempFukt: 548,
+  elmatareDIN: 2580, elmatarePanel: 1035, elmatareTrafo: 3390,
+  antennUt: 1628, antennIn: 580, repeaterIn: 3605, repeaterUt: 4185, sim: 1575,
+  smartCB: 3000,   // Smart Energikontroll engång (CB) -> rec = /0.65
+  boxHeat: 24000,  // Proptech BOX Heat -> rec = /0.62
+};
+const INSAMLING = {
+  'lte128': { label: 'Connect LTE-M M-Bus 128 mätare (4G)', cost: 12107 },
+  'lte32':  { label: 'Connect LTE-M M-Bus 32 mätare (4G)',  cost: 10920 },
+  'lte256': { label: 'Connect LTE-M M-Bus 256 mätare (4G)', cost: 14175 },
+  'mbus128':{ label: 'Connect M-Bus 128 mätare (fast nät)', cost: 11757 },
+  'mbus32': { label: 'Connect M-Bus 32 mätare (fast nät)',  cost: 9940 },
+  'mbus256':{ label: 'Connect M-Bus 256 mätare (fast nät)', cost: 12877 },
+};
+const TIERS = {
+  small:  { name: 'Small',  range: '< 20 LGH',  min: 0,  max: 19,    cost: 2200,  rec: 4400 },
+  medium: { name: 'Medium', range: '20–49 LGH', min: 20, max: 49,    cost: 4390,  rec: 8780 },
+  large:  { name: 'Large',  range: '50–79 LGH', min: 50, max: 79,    cost: 7850,  rec: 15700 },
+  xl:     { name: 'XL',     range: '≥ 80 LGH',  min: 80, max: 1e9,   cost: 11770, rec: 23540 },
+};
+const BBO_SYSTEM = 1200;          // PrisSystem (rek)
+const BBO_4G = 1140;              // Pris4GModem (rek)
+const BBO_ARSKOST = BBO_SYSTEM + BBO_4G; // 2340 kr/år (BBO ink datatrafik)
+const DIV_SMARTCB = 0.65;        // Smart Energikontroll engång
+const DIV_BOX = 0.62;            // Proptech BOX Heat
+const DIV_SAAS = 0.5;            // SaaS tier
+
+// Mätningsposter (kostpris, default antal)
+const MATNING_ITEMS = [
+  { id: 'insamling',     kind: 'insamling', sel: 'lte128', qty: 1, group: 'utrustning' },
+  { id: 'tempsensor',    label: 'Temp sensor', desc: 'Temperatursensor MTW-1A (auto = antal LGH)', cost: 460,  qty: 0, group: 'utrustning', autoLgh: true },
+  { id: 'tempfukt',      label: 'Temp & fukt sensor', desc: 'Temperatur + fukt MTHW1-A', cost: 548,  qty: 0, group: 'utrustning' },
+  { id: 'elmatare-din',  label: 'Elmätare (DIN)', desc: 'Elmätare trådlös M-Bus, DIN-montage', cost: 2580, qty: 0, group: 'utrustning' },
+  { id: 'elmatare-panel',label: 'Elmätare (Panel)', desc: 'Elmätare panelmontage / mätarskåp', cost: 1035, qty: 0, group: 'utrustning' },
+  { id: 'elmatare-trafo',label: 'Elmätare (Trafo)', desc: 'Elmätare för trafomätning', cost: 3390, qty: 0, group: 'utrustning' },
+  { id: 'antenn-utomhus',label: 'Antenn utomhus', desc: 'ANT04 utomhus 43dBi inkl. 15m kabel', cost: 1628, qty: 1, group: 'utrustning' },
+  { id: 'antenn-inomhus',label: 'Antenn inomhus', desc: 'ANT05 fasadantenn', cost: 580,  qty: 0, group: 'utrustning' },
+  { id: 'repeater-inomhus', label: 'Repeater inomhus', desc: 'REP03 230V med inbyggd antenn', cost: 3605, qty: 0, group: 'utrustning' },
+  { id: 'repeater-utomhus', label: 'Repeater utomhus', desc: 'REP02 230V extern antenn', cost: 4185, qty: 0, group: 'utrustning' },
+  { id: 'sim',           label: 'Sim-kort', desc: 'Sim-kort 10GB, 5 år förbetalt', cost: 1575, qty: 0, group: 'utrustning' },
+  { id: 'elinstall',     label: 'Elinstallation', desc: 'Kostnad för elinstallation (kr)', cost: 12000, qty: 1, group: 'tjanst', directCost: true },
+  { id: 'scada',         label: 'SCADA/BMS-integration', desc: 'Integration mot överordnat system (kr)', cost: 0, qty: 1, group: 'tjanst', directCost: true },
+  { id: 'installmaterial', label: 'Installationsmaterial', desc: 'Kabel, fästmaterial m.m. (kr)', cost: 1500, qty: 1, group: 'tjanst', directCost: true },
+];
+
+// State
+let matningState = MATNING_ITEMS.map(i => ({ ...i }));
+let currentTier = null;
+let currentTierAuto = true;
+let pdfSource = 'energi';
+let customers = [];
+let prisTouched = false;
+let _tillkommande = 0;
+
+try {
+  const saved = localStorage.getItem('bravida-proptech-customers-v3');
+  if (saved) customers = JSON.parse(saved);
+} catch(e) {}
+
+// ============================================
+// HELPERS
+// ============================================
+const $ = id => document.getElementById(id);
+function num(id) { const el = $(id); return el ? (parseFloat(el.value) || 0) : 0; }
+function intval(id) { const el = $(id); return el ? (parseInt(el.value) || 0) : 0; }
+function fmt(n) {
+  if (n === '' || n === null || n === undefined) return '–';
+  if (isNaN(n)) return '–';
+  return Math.round(n).toLocaleString('sv-SE');
+}
+function fmtKr(n) { return fmt(n) + ' kr'; }
+function fmtDecimal(n, d = 2) {
+  if (n === '' || n === null || n === undefined || isNaN(n)) return '–';
+  return n.toFixed(d).replace('.', ',');
+}
+function escapeHTML(str) {
+  if (!str && str !== 0) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ============================================
+// TABS
+// ============================================
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.tab[data-tab="' + name + '"]').classList.add('active');
+  $('panel-' + name).classList.add('active');
+  if (name === 'matning') renderMatning();
+  if (name === 'energi') renderEnergi();
+  if (name === 'proptech') renderProptech();
+  if (name === 'jamfor') renderJamfor();
+  if (name === 'anbud') renderPDF();
+  if (name === 'register') renderRegister();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================
+// ENERGIPRIS – upplösning (faktura primär, lista, manuell)
+// ============================================
+function getPris() { return num('data-pris'); }
+
+function setPris(v, hint, hintColor) {
+  const el = $('data-pris');
+  el.value = Math.round(v * 1000) / 1000;
+  if (hint !== undefined) {
+    const h = $('pris-hint');
+    h.textContent = hint;
+    h.style.color = hintColor || 'var(--success)';
+  }
+}
+
+function recalcAutoPrice() {
+  if (prisTouched) return;
+  const kwh = num('data-totalkwh'), kr = num('data-totalkr');
+  if (kwh > 0 && kr > 0) {
+    setPris(kr / kwh, 'Beräknat från faktura (' + fmt(kr) + ' kr ÷ ' + fmt(kwh) + ' kWh)');
+  } else {
+    setPris(0.85, 'Standard 0,85 kr/kWh');
+  }
+}
+
+function onPrisInput() {
+  prisTouched = true;
+  const h = $('pris-hint');
+  h.textContent = 'Manuellt angivet';
+  h.style.color = 'var(--gold)';
+  onChange();
+}
+
+function prisFromFaktura() {
+  const kwh = num('data-totalkwh'), kr = num('data-totalkr');
+  if (kwh > 0 && kr > 0) {
+    prisTouched = true;
+    setPris(kr / kwh, 'Beräknat från faktura (' + fmt(kr) + ' kr ÷ ' + fmt(kwh) + ' kWh)');
+    onChange();
+  } else {
+    alert('Fyll i total förbrukning (kWh) och total kostnad (kr) först.');
+  }
+}
+
+function resetPris() {
+  prisTouched = false;
+  $('kommun-select').value = '';
+  $('kommun-info').textContent = '';
+  recalcAutoPrice();
+  onChange();
+}
+
+function onKommunSelect() {
+  const v = $('kommun-select').value.trim();
+  const k = FJV.find(x => x.kommun.toLowerCase() === v.toLowerCase());
+  const info = $('kommun-info');
+  if (!k) { info.textContent = ''; return; }
+  if (!k.fjv) { info.textContent = k.kommun + ': ingen fjärrvärme i listan'; return; }
+  const factor = num('data-specifik') || 193;
+  const pris = k.fjv / factor;
+  prisTouched = true;
+  setPris(pris, 'Från ' + k.kommun + ' (' + fmtDecimal(k.fjv, 1) + ' kr/m²·år ÷ ' + factor + ')');
+  info.textContent = k.foretag + ' · ' + fmtDecimal(k.fjv, 1) + ' kr/m²·år · ' + fmt(k.krLgh) + ' kr/lgh·mån';
+  onChange();
+}
+
+function populateKommunList() {
+  const dl = $('kommun-list');
+  const seen = {};
+  let html = '';
+  FJV.slice().sort((a, b) => a.kommun.localeCompare(b.kommun, 'sv')).forEach(k => {
+    if (seen[k.kommun]) return;
+    seen[k.kommun] = 1;
+    html += '<option value="' + escapeHTML(k.kommun) + '">' + escapeHTML(k.lan + ' · ' + k.foretag) + '</option>';
+  });
+  dl.innerHTML = html;
+}
+
+// ============================================
+// CALCULATIONS
+// ============================================
+function getEnergyData() {
+  const totalKwh = num('data-totalkwh');
+  const totalKr = num('data-totalkr');
+  const vvMonth = num('data-vvmonth');
+  const pct = num('data-pct') || 15;
+  const antalLgh = intval('data-antal-lgh');
+  const boa = num('data-boa');
+  const vvYear = vvMonth * 12;
+  const varmeKwh = Math.max(0, totalKwh - vvYear);
+  const pris = getPris();
+  const besparingKwh = varmeKwh * (pct / 100);
+  const besparingKr = besparingKwh * pris;
+  const co2Saving = besparingKwh * 0.05;
+  return { totalKwh, totalKr, vvMonth, vvYear, pct, antalLgh, boa, varmeKwh, pris, besparingKwh, besparingKr, co2Saving };
+}
+
+function autoTierByLgh(lgh) {
+  if (!lgh) return null;
+  if (lgh < 20) return 'small';
+  if (lgh < 50) return 'medium';
+  if (lgh < 80) return 'large';
+  return 'xl';
+}
+
+function onChange() {
+  recalcAutoPrice();
+  const D = getEnergyData();
+  // Auto temp sensor count from antal LGH
+  const tempItem = matningState.find(m => m.id === 'tempsensor');
+  if (tempItem && tempItem.autoLgh && D.antalLgh && !tempItem.userSet) {
+    tempItem.qty = D.antalLgh;
+  }
+  // Auto-tier
+  if (currentTierAuto) {
+    const t = autoTierByLgh(D.antalLgh);
+    if (t) currentTier = t;
+  }
+  // KPIs
+  $('kpi-varme').textContent = D.varmeKwh > 0 ? fmt(D.varmeKwh) : '–';
+  $('kpi-pris').textContent = D.pris > 0 ? fmtDecimal(D.pris) : '–';
+  $('kpi-besparing').textContent = D.besparingKr > 0 ? fmt(D.besparingKr) : '–';
+  $('kpi-tier').textContent = currentTier ? TIERS[currentTier].name : '–';
+  $('kpi-co2').textContent = D.co2Saving > 0 ? fmtDecimal(D.co2Saving / 1000, 1) : '–';
+  // Pulse save button when customer name is filled
+  const saveBtns = document.querySelectorAll('.btn-save-trigger');
+  const hasKund = !!$('kund-namn').value.trim();
+  saveBtns.forEach(btn => { if (hasKund) btn.classList.add('btn-save-pulse'); else btn.classList.remove('btn-save-pulse'); });
+  autoSave();
+  if ($('panel-matning').classList.contains('active')) renderMatning();
+  if ($('panel-energi').classList.contains('active')) renderEnergi();
+  if ($('panel-proptech').classList.contains('active')) renderProptech();
+}
+
+// ============================================
+// MÄTNING
+// ============================================
+function setTG(v) { $('m-tg').value = v.toFixed(2); renderMatning(); }
+function getTG() { const v = parseFloat($('m-tg').value); return (v > 0 && v < 1) ? v : 0.35; }
+function itemCost(item) {
+  if (item.kind === 'insamling') return item.qty > 0 ? (INSAMLING[item.sel].cost * item.qty) : 0;
+  if (item.directCost) return item.cost || 0;
+  return item.qty * (item.cost || 0);
+}
+function matningCost() { let c = 0; matningState.forEach(it => c += itemCost(it)); return c; }
+function matningRec() { return matningCost() / (1 - getTG()); }
+function getMatningTotal() { return matningRec(); } // alias för PDF
+
+function renderMatning() {
+  const tg = getTG();
+  const table = $('matning-table');
+  let html = '<thead><tr>'
+    + '<th>Produkt / tjänst</th>'
+    + '<th style="width: 150px">Antal / Val</th>'
+    + '<th style="width: 100px; text-align:right">Kostpris</th>'
+    + '<th style="width: 110px; text-align:right">À-pris (TG)</th>'
+    + '<th style="width: 120px; text-align:right">Summa</th>'
+    + '</tr></thead><tbody>'
+    + '<tr class="section-header"><td colspan="5">Utrustning (insamling, sensorer, antenner)</td></tr>';
+
+  matningState.filter(i => i.group === 'utrustning').forEach(item => {
+    if (item.kind === 'insamling') {
+      const unit = INSAMLING[item.sel].cost;
+      const summaCost = item.qty > 0 ? unit * item.qty : 0;
+      const rec = summaCost / (1 - tg);
+      let opts = '';
+      Object.keys(INSAMLING).forEach(key => {
+        opts += '<option value="' + key + '"' + (key === item.sel ? ' selected' : '') + '>' + escapeHTML(INSAMLING[key].label) + '</option>';
+      });
+      html += '<tr>'
+        + '<td class="col-prod">Insamlingsenhet<div class="col-prod-desc">Connect M-Bus kapsling</div></td>'
+        + '<td class="col-antal"><select onchange="updateInsamlingSel(this.value)">' + opts + '</select>'
+        + '<input type="number" value="' + item.qty + '" min="0" style="margin-top:4px" onchange="updateMatningQty(\'insamling\', this.value)"></td>'
+        + '<td class="col-pris">' + fmt(unit) + '</td>'
+        + '<td class="col-pris">' + fmt(unit / (1 - tg)) + '</td>'
+        + '<td class="col-summa">' + fmt(rec) + ' kr</td>'
+        + '</tr>';
+    } else {
+      const rec = (item.qty * item.cost) / (1 - tg);
+      html += '<tr>'
+        + '<td class="col-prod">' + escapeHTML(item.label) + '<div class="col-prod-desc">' + escapeHTML(item.desc) + '</div></td>'
+        + '<td class="col-antal"><input type="number" value="' + item.qty + '" min="0" onchange="updateMatningQty(\'' + item.id + '\', this.value)"></td>'
+        + '<td class="col-pris">' + fmt(item.cost) + '</td>'
+        + '<td class="col-pris">' + fmt(item.cost / (1 - tg)) + '</td>'
+        + '<td class="col-summa">' + fmt(rec) + ' kr</td>'
+        + '</tr>';
+    }
+  });
+
+  html += '<tr class="section-header"><td colspan="5">Tjänster & material (kostnad i kr)</td></tr>';
+  matningState.filter(i => i.group === 'tjanst').forEach(item => {
+    const rec = (item.cost || 0) / (1 - tg);
+    html += '<tr>'
+      + '<td class="col-prod">' + escapeHTML(item.label) + '<div class="col-prod-desc">' + escapeHTML(item.desc) + '</div></td>'
+      + '<td class="col-antal"><input type="number" value="' + (item.cost || 0) + '" min="0" step="100" onchange="updateMatningCost(\'' + item.id + '\', this.value)"></td>'
+      + '<td class="col-pris">' + fmt(item.cost) + '</td>'
+      + '<td class="col-pris">' + fmt(rec) + '</td>'
+      + '<td class="col-summa">' + fmt(rec) + ' kr</td>'
+      + '</tr>';
+  });
+
+  const total = matningRec();
+  html += '<tr class="total"><td colspan="4"><strong>PRIS TILL KUND (Mätning total)</strong></td>'
+    + '<td class="col-summa">' + fmt(total) + ' kr</td></tr></tbody>';
+  table.innerHTML = html;
+  $('matning-total').textContent = fmt(total) + ' kr';
+}
+
+function updateMatningQty(id, val) {
+  const item = matningState.find(i => i.id === id);
+  if (item) { item.qty = parseFloat(val) || 0; item.userSet = true; }
+  renderMatning();
+}
+function updateMatningCost(id, val) {
+  const item = matningState.find(i => i.id === id);
+  if (item) { item.cost = parseFloat(val) || 0; }
+  renderMatning();
+}
+function updateInsamlingSel(val) {
+  const item = matningState.find(i => i.id === 'insamling');
+  if (item) { item.sel = val; }
+  renderMatning();
+}
+
+// ============================================
+// SMART ENERGIKONTROLL (EBO)
+// ============================================
+function selectTier(t) { currentTier = t; currentTierAuto = false; renderEnergi(); renderProptech(); }
+function getTillkommande() { return _tillkommande; }
+function setTillkommande(v) { _tillkommande = parseFloat(v) || 0; renderEnergi(); }
+
+function renderEnergi() {
+  const D = getEnergyData();
+  const mRec = matningRec();
+  const tier = currentTier ? TIERS[currentTier] : null;
+
+  $('ek-matning-display').textContent = fmt(mRec) + ' kr';
+  $('ek-lgh-display').textContent = D.antalLgh || '–';
+  $('ek-pris-display').textContent = D.pris > 0 ? fmtDecimal(D.pris) + ' kr/kWh' : '–';
+
+  document.querySelectorAll('#panel-energi .tier').forEach(el => el.classList.remove('selected', 'recommended'));
+  if (currentTier) {
+    const el = document.querySelector('#panel-energi .tier[data-tier="' + currentTier + '"]');
+    if (el) { el.classList.add('selected'); if (currentTierAuto) el.classList.add('recommended'); }
+    $('ek-tier-display').textContent = tier.name;
+  } else {
+    $('ek-tier-display').textContent = '–';
+  }
+
+  const smartEngangRec = COST.smartCB / DIV_SMARTCB; // 4615
+  const tillk = getTillkommande();
+  const saas = tier ? tier.rec : 0;
+
+  const rows = [
+    { label: 'EBO – Smart Energikontroll (engångskostnad)', desc: 'Startpaket inkl. konfiguration', qty: 1, pris: smartEngangRec, summa: smartEngangRec },
+    { label: 'Insamlingsenhet, sensorer m.m.', desc: 'Från Mätning-fliken (steg 2)', qty: 1, pris: mRec, summa: mRec },
+    { label: 'Tillkommande funktioner / produkter', desc: 'T.ex. kontaktormotorlåda, ställdon (frivillig)', qty: 1, editable: 'tillkommande' },
+    { label: 'Årskostnad Smart Energikontroll ' + (tier ? '(' + tier.name + ')' : ''), desc: 'Återkommande SaaS-avgift', qty: 1, pris: saas, summa: saas, isYear: true },
+  ];
+
+  let html = '';
+  rows.forEach(row => {
+    const cell = row.editable === 'tillkommande'
+      ? '<input type="number" value="' + tillk + '" placeholder="0" onchange="setTillkommande(this.value)" style="width:100%; padding:4px 8px; border:1px solid var(--border); border-radius:4px;">'
+      : fmt(row.pris);
+    const summa = row.editable === 'tillkommande' ? tillk : row.summa;
+    html += '<tr>'
+      + '<td class="col-prod">' + escapeHTML(row.label) + '<div class="col-prod-desc">' + escapeHTML(row.desc) + '</div></td>'
+      + '<td class="col-antal" style="text-align:center">' + (row.qty || '–') + '</td>'
+      + '<td class="col-pris">' + cell + '</td>'
+      + '<td class="col-summa">' + fmt(summa) + ' kr' + (row.isYear ? '/år' : '') + '</td>'
+      + '</tr>';
+  });
+  $('energi-rows').innerHTML = html;
+
+  const engang = smartEngangRec + mRec + tillk;
+  const total1 = engang + saas;
+  const brutto = D.besparingKr;
+  const netto = brutto - saas;
+  const payoff = netto > 0 ? engang / netto : 0;
+
+  $('ek-engang').textContent = fmt(engang) + ' kr';
+  $('ek-saas').textContent = fmt(saas) + ' kr/år';
+  $('ek-total').textContent = fmt(total1) + ' kr';
+  $('ek-besp').textContent = brutto > 0 ? fmt(brutto) + ' kr/år' : '–';
+  $('ek-netto').textContent = brutto > 0 ? fmt(netto) + ' kr/år' : '–';
+  $('ek-payoff').textContent = payoff > 0 ? payoff.toFixed(1) + ' år' : (brutto > 0 ? 'SaaS > besparing' : '–');
+}
+
+// ============================================
+// PROPTECH BOX (BBO)
+// ============================================
+function renderProptech() {
+  const D = getEnergyData();
+  const mRec = matningRec();
+  const tier = currentTier ? TIERS[currentTier] : null;
+
+  $('pb-matning-display').textContent = fmt(mRec) + ' kr';
+  $('pb-pris-display').textContent = D.pris > 0 ? fmtDecimal(D.pris) + ' kr/kWh' : '–';
+  $('pb-tier-display').textContent = tier ? tier.name : '–';
+
+  const boxRec = COST.boxHeat / DIV_BOX; // 38710
+  const arsSaaS = tier ? tier.rec : 0;
+  const arsData = BBO_ARSKOST; // 2340
+
+  const rows = [
+    { label: 'Proptech BOX Heat ink. Smart Energikontroll', desc: 'Komplett BOX för BBO-anslutning', qty: 1, pris: boxRec, summa: boxRec },
+    { label: 'Insamlingsenhet, sensorer m.m.', desc: 'Från Mätning-fliken (steg 2)', qty: 1, pris: mRec, summa: mRec },
+    { label: 'Årskostnad BBO + Smart Energikontroll ' + (tier ? '(' + tier.name + ')' : ''), desc: 'Smart Energikontroll-avgift', qty: 1, pris: arsSaaS, summa: arsSaaS, isYear: true },
+    { label: 'Årskostnad BBO ink. datatrafik', desc: 'BBO-system + 4G/datatrafik', qty: 1, pris: arsData, summa: arsData, isYear: true },
+  ];
+
+  let html = '';
+  rows.forEach(row => {
+    html += '<tr>'
+      + '<td class="col-prod">' + escapeHTML(row.label) + '<div class="col-prod-desc">' + escapeHTML(row.desc) + '</div></td>'
+      + '<td class="col-antal" style="text-align:center">' + row.qty + '</td>'
+      + '<td class="col-pris">' + fmt(row.pris) + '</td>'
+      + '<td class="col-summa">' + fmt(row.summa) + ' kr' + (row.isYear ? '/år' : '') + '</td>'
+      + '</tr>';
+  });
+  $('proptech-rows').innerHTML = html;
+
+  const engang = boxRec + mRec;
+  const saas = arsSaaS + arsData;
+  const total1 = engang + saas;
+  const brutto = D.besparingKr;
+  const netto = brutto - saas;
+  const payoff = netto > 0 ? engang / netto : 0;
+
+  $('pb-engang').textContent = fmt(engang) + ' kr';
+  $('pb-saas').textContent = fmt(arsSaaS) + ' kr/år';
+  $('pb-data').textContent = fmt(arsData) + ' kr/år';
+  $('pb-total').textContent = fmt(total1) + ' kr';
+  $('pb-besp').textContent = brutto > 0 ? fmt(brutto) + ' kr/år' : '–';
+  $('pb-netto').textContent = brutto > 0 ? fmt(netto) + ' kr/år' : '–';
+  $('pb-payoff').textContent = payoff > 0 ? payoff.toFixed(1) + ' år' : (brutto > 0 ? 'SaaS > besparing' : '–');
+}
+
+// ============================================
+// JÄMFÖR EBO vs BBO
+// ============================================
+function renderJamfor() {
+  const D = getEnergyData();
+  const mRec = matningRec();
+  const tier = currentTier ? TIERS[currentTier] : null;
+  const grid = $('jamfor-grid');
+
+  if (!D.totalKwh || !D.varmeKwh) {
+    grid.innerHTML = '<div class="empty-state"><p>Fyll i kund + fjärrvärmedata på steg 1 först.</p></div>';
+    return;
+  }
+
+  // EBO values
+  const ekStart = COST.smartCB / DIV_SMARTCB;
+  const ekEngang = ekStart + mRec + getTillkommande();
+  const ekSaas = tier ? tier.rec : 0;
+  const ekBrutto = D.besparingKr;
+  const ekNetto = ekBrutto - ekSaas;
+  const ekPayoff = ekNetto > 0 ? ekEngang / ekNetto : 0;
+
+  // BBO values
+  const boxRec = COST.boxHeat / DIV_BOX;
+  const pbEngang = boxRec + mRec;
+  const pbSaas = (tier ? tier.rec : 0) + BBO_ARSKOST;
+  const pbBrutto = D.besparingKr;
+  const pbNetto = pbBrutto - pbSaas;
+  const pbPayoff = pbNetto > 0 ? pbEngang / pbNetto : 0;
+
+  const ekoRecom = ekPayoff > 0 && pbPayoff > 0 ? ekPayoff <= pbPayoff : ekPayoff > 0;
+  const bboRecom = !ekoRecom;
+
+  function makeCard(title, engang, saas, brutto, netto, payoff, recommended) {
+    const payoffStr = payoff > 0 ? payoff.toFixed(1) + ' år' : (brutto > 0 ? 'SaaS > besparing' : '–');
+    return '<div class="jamfor-card' + (recommended ? ' recommended-card' : '') + '">'
+      + (recommended ? '<div class="jamfor-badge">⭐ Rekommenderat</div>' : '')
+      + '<div class="jamfor-title">' + escapeHTML(title) + '</div>'
+      + '<div class="jamfor-row"><span class="jlabel">Engångskostnad</span><span class="jval">' + fmt(engang) + ' kr</span></div>'
+      + '<div class="jamfor-row"><span class="jlabel">Årskostnad (SaaS)</span><span class="jval">' + fmt(saas) + ' kr/år</span></div>'
+      + '<div class="jamfor-row"><span class="jlabel">Bruttobesparing/år</span><span class="jval">' + (brutto > 0 ? fmt(brutto) + ' kr' : '–') + '</span></div>'
+      + '<div class="jamfor-row"><span class="jlabel">Netto besparing/år</span><span class="jval">' + (brutto > 0 ? fmt(netto) + ' kr' : '–') + '</span></div>'
+      + '<div class="jamfor-payoff">Payoff: ' + payoffStr + '</div>'
+      + '</div>';
+  }
+
+  grid.innerHTML = makeCard('Smart Energikontroll (EBO)', ekEngang, ekSaas, ekBrutto, ekNetto, ekPayoff, ekoRecom)
+    + makeCard('Proptech BOX Heat (BBO)', pbEngang, pbSaas, pbBrutto, pbNetto, pbPayoff, bboRecom);
+}
+
+// ============================================
+// PDF
+// ============================================
+function selectPdfSource(s) {
+  pdfSource = s;
+  document.querySelectorAll('.product-card').forEach(el => el.classList.remove('selected'));
+  $('pdf-source-' + s).classList.add('selected');
+  renderPDF();
+}
+
+function renderPDF() {
+  const D = getEnergyData();
+  const mRec = matningRec();
+  const tier = currentTier ? TIERS[currentTier] : null;
+
+  const kund = $('kund-namn').value;
+  const kontakt = $('kund-kontakt').value;
+  const adress = $('kund-adress').value;
+  const ort = $('kund-ort').value;
+  const bNamn = $('b-namn').value;
+  const bTel = $('b-tel').value;
+  const bEpost = $('b-epost').value;
+  const bOrt = $('b-ort').value;
+  const bDatum = $('b-datum').value || new Date().toISOString().split('T')[0];
+  const bGiltig = parseInt($('b-giltig').value || 30);
+  const giltigDate = new Date(bDatum);
+  giltigDate.setDate(giltigDate.getDate() + bGiltig);
+  const giltigStr = giltigDate.toISOString().split('T')[0];
+
+  const preview = $('pdf-preview');
+  if (!kund || !D.totalKwh) {
+    preview.innerHTML = '<div class="empty-state"><p>Fyll i kund + fjärrvärmedata på steg 1 först.</p></div>';
+    return;
+  }
+
+  let engang, saas, total1, productName, productSub, prodLines;
+  if (pdfSource === 'energi') {
+    productName = 'Smart Energikontroll (EBO)';
+    productSub = 'Smart Energikontroll med trådlösa rumsgivare';
+    const ekStart = COST.smartCB / DIV_SMARTCB;
+    engang = ekStart + mRec + getTillkommande();
+    saas = tier ? tier.rec : 0;
+    total1 = engang + saas;
+    prodLines = [
+      { label: 'EBO – Smart Energikontroll (engångskostnad)', val: ekStart },
+      { label: 'Insamlingsenhet, sensorer m.m. (Mätning)', val: mRec },
+    ];
+    if (getTillkommande() > 0) prodLines.push({ label: 'Tillkommande funktioner', val: getTillkommande() });
+    if (tier) prodLines.push({ label: 'Årskostnad Smart Energikontroll ' + tier.name, val: tier.rec, suffix: '/år' });
+  } else {
+    productName = 'Proptech BOX Heat (BBO)';
+    productSub = 'Bravida Building Operation med Smart Energikontroll';
+    const boxRec = COST.boxHeat / DIV_BOX;
+    const arsSaaS = tier ? tier.rec : 0;
+    engang = boxRec + mRec;
+    saas = arsSaaS + BBO_ARSKOST;
+    total1 = engang + saas;
+    prodLines = [
+      { label: 'Proptech BOX Heat ink. Smart Energikontroll', val: boxRec },
+      { label: 'Insamlingsenhet, sensorer m.m. (Mätning)', val: mRec },
+      { label: 'Årskostnad BBO + Smart Energikontroll ' + (tier ? '(' + tier.name + ')' : ''), val: arsSaaS, suffix: '/år' },
+      { label: 'Årskostnad BBO ink. datatrafik', val: BBO_ARSKOST, suffix: '/år' },
+    ];
+  }
+
+  const brutto = D.besparingKr;
+  const netto = brutto - saas;
+  const payoff = netto > 0 ? engang / netto : 0;
+
+  const _brvArms = '<g fill="#35D08A"><path fill-rule="evenodd" d="M50,4 Q50,50 96,50 Q50,50 50,96 Q50,50 4,50 Q50,50 50,4 Z M50,30 Q50,50 70,50 Q50,50 50,70 Q50,50 30,50 Q50,50 50,30 Z"/><path d="M50,37 Q50,50 63,50 Q50,50 50,63 Q50,50 37,50 Q50,50 50,37 Z"/></g>';
+  const star = '<svg class="brv-logo-svg" viewBox="0 0 100 100">' + _brvArms + '</svg>';
+  const starBig = '<svg class="brv-cover-star" viewBox="0 0 100 100">' + _brvArms + '</svg>';
+  const starBigLogo = '<svg class="brv-logo-svg-big" viewBox="0 0 100 100">' + _brvArms + '</svg>';
+
+  const headerHTML = (page, total) => '<div class="brv-header"><div class="brv-logo-row">' + star + '<span class="brv-logo-text">bravida</span></div>'
+    + '<div class="brv-refblock"><span>Ref.nr:</span><span>' + page + ' (' + total + ')</span></div></div>';
+  const footerHTML = '<div class="brv-footer"><div class="brv-footer-fskat">Innehar F-skattesedel</div>'
+    + '<div class="brv-footer-cols"><div>www.bravida.se</div><div>Besöksadress:</div><div>Tfn:<br>Fax:</div><div>Säte:<br>Stockholm</div><div>Org.nummer:</div></div></div>';
+
+  const totalPages = 5;
+  const ar = $('data-ar').value || '2026';
+  let html = '';
+
+  // PAGE 1: COVER
+  html += '<div class="brv-page"><div class="brv-cover-addr">'
+    + (kund ? '<strong>' + escapeHTML(kund) + '</strong>' : '')
+    + (kontakt ? escapeHTML(kontakt) + '<br>' : '')
+    + (adress ? escapeHTML(adress) + '<br>' : '')
+    + (ort ? escapeHTML(ort) : '')
+    + '</div>' + starBig + '<div class="brv-cover-box"></div>'
+    + '<div class="brv-cover-inner">'
+    + '<div style="font-size: 12pt; color: var(--brv-blue); font-weight: 700; margin-bottom: 6mm; letter-spacing: 0.06em">BRAVIDA</div>'
+    + '<div class="brv-cover-title">' + (pdfSource === 'energi' ? 'Smart Energikontroll' : 'Proptech Box HEAT') + '</div>'
+    + '<div class="brv-cover-undertitle">' + escapeHTML(productSub) + '</div>'
+    + '<div class="brv-cover-sub"><div><strong>' + escapeHTML(kund) + '</strong></div>'
+    + (adress ? '<div>' + escapeHTML(adress) + (ort ? ', ' + escapeHTML(ort) : '') + '</div>' : '')
+    + '<div>Datum: ' + bDatum + '</div></div></div>'
+    + '<div class="brv-cover-footer"><div class="brv-vision-block"><div class="brv-vision-title">Vår vision</div>'
+    + 'Bravida gör det möjligt för kunderna att utveckla fastigheters fulla potential. Genom service och installation ger vi fastigheter liv – och leder vägen mot ett hållbart och motståndskraftigt samhälle</div>'
+    + '<div class="brv-logo-big">' + starBigLogo + '<span class="brv-logo-text-big">bravida</span></div></div></div>';
+
+  // PAGE 2
+  const tempItem = matningState.find(m => m.id === 'tempsensor');
+  html += '<div class="brv-page"><div class="brv-page-inner">' + headerHTML(2, totalPages)
+    + '<h1 class="brv-h1">Prisförslag avseende ' + escapeHTML(productName) + '</h1>'
+    + '<p class="brv-p">Vi tackar för Erat förtroende och erbjuder oss härmed att utföra rubricerat arbete i enlighet med detta pris.</p>'
+    + '<h2 class="brv-h2">Omfattning</h2>'
+    + '<p class="brv-p">Demontering av befintlig Styr- och reglercentral samt installation av Bravida ' + escapeHTML(productName) + '.</p>'
+    + '<p class="brv-p">Anslutning av Fjärrvärmemätare via M-Bus förutsatt att extra plats finns i Energimängdsmätaren.</p>'
+    + '<p class="brv-p">Lösningen levereras med trådlösa inomhusgivare (' + (tempItem ? tempItem.qty : 0) + ' st) med möjlighet till komplettering.</p>'
+    + '<p class="brv-p">I grundpriset förutsätts att det går att återanvända befintliga temperaturgivare och ställdon.</p>'
+    + '<p class="brv-p">Konfiguration av funktion samt driftsättning av anläggningen och uppkoppling till Bravidas överordnade system.</p>'
+    + '<h2 class="brv-h2">Förutsättningar</h2><ul class="brv-ul">'
+    + '<li>Tillträde till fjärrvärmecentral / teknikutrymme tillhandahålls kostnadsfritt.</li>'
+    + '<li>Förbrukning av el och vatten under installationen tillhandahålls kostnadsfritt.</li>'
+    + '<li>Befintliga givare och ställdon förutsätts vara funktionsdugliga.</li>'
+    + '<li>Index: ' + escapeHTML($('data-index').value || '3021-25 Teknikinstallationsavtalet') + '.</li>'
+    + '</ul>' + footerHTML + '</div></div>';
+
+  // PAGE 3: BESPARINGSKALKYL
+  html += '<div class="brv-page"><div class="brv-page-inner">' + headerHTML(3, totalPages)
+    + '<h2 class="brv-h2" style="font-size: 15pt; margin-top: 0">BESPARINGSKALKYL / PAYOFF PER ÅR</h2>'
+    + '<p class="brv-p">Vid vårt besök presenterades aktuella fjärrvärmefakturor vilka redogjorde för en energiförbrukning om cirka <strong>' + fmt(D.totalKwh) + ' kWh</strong> per år, och det till en kostnad om cirka <strong>' + fmt(D.totalKr) + ' kr</strong> vilket gör <strong>' + fmtDecimal(D.pris) + ' kr/kWh</strong> år ' + ar + '.</p>'
+    + '<p class="brv-p">Vi har med hjälp utav senaste fakturorna uppskattat att cirka <strong>' + fmt(D.vvMonth) + ' kWh/månad</strong>, ca <strong>' + fmt(D.vvYear) + ' kWh</strong> per år utgör energi till tappvarmvatten och tappvarmvattencirkulation.</p>'
+    + '<p class="brv-p">Detta skulle innebära att <strong>' + fmt(D.varmeKwh) + ' kWh</strong> Fjärrvärme är till värmesystemet.</p>'
+    + '<p class="brv-p">I nedan exempel när vi kalkylerar avbetalningstiden på ' + escapeHTML(productName) + ' har vi antagit att det går att spara ca <strong>' + D.pct + '%</strong> av era aktuella ' + fmt(D.varmeKwh) + ' kWh/år.</p>'
+    + (D.antalLgh ? '<p class="brv-p"><strong>' + (D.boa > 0 ? fmt(D.boa) + ' m² BOA/LOA fördelat på ' : '') + D.antalLgh + '</strong> bostäder.</p>' : '')
+    + '<div style="margin: 4mm 0 5mm 0">'
+    + '<div>Antagen inomhustemperatur: <strong>+' + (num('data-temp') || 22) + '°C</strong></div>'
+    + (num('data-effekt') ? '<div>Värmeeffekt Undercentral: <strong>' + num('data-effekt') + ' kW</strong></div>' : '')
+    + '<div>Energiuttag Värme: <strong>' + fmt(D.varmeKwh) + ' kWh</strong></div>'
+    + '<div>Energiuttag Tappvarmvatten + VVC: <strong>' + fmt(D.vvYear) + ' kWh</strong></div>'
+    + '<div>Energipris ' + ar + ': <strong>' + fmtDecimal(D.pris) + ' kr/kWh</strong></div></div>'
+    + '<div class="brv-besparing-box"><div class="brv-besparing-label">Uppskattad analyserad besparing:</div>'
+    + '<div class="brv-besparing-value">Ca ' + fmt(brutto) + ' kr per år.</div>'
+    + '<div class="brv-besparing-formula">' + fmt(D.varmeKwh) + ' kWh × ' + D.pct + '% × ' + fmtDecimal(D.pris) + ' kr/kWh</div></div>'
+    + (saas > 0 ? '<p class="brv-p">Avgår årlig SaaS-kostnad: <strong>' + fmt(saas) + ' kr/år</strong></p><p class="brv-p"><strong>Netto besparing: ' + fmt(netto) + ' kr/år</strong></p>' : '')
+    + (D.co2Saving > 0 ? '<p class="brv-p">CO₂-besparing: <strong>' + fmtDecimal(D.co2Saving / 1000, 1) + ' ton CO₂/år</strong> (50 g CO₂/kWh fjärrvärme)</p>' : '')
+    + '<div class="brv-payoff">Avbetalningstiden är beräknad till cirka ' + (payoff > 0 ? payoff.toFixed(1) : '–') + ' år.</div>'
+    + '<div style="font-size: 9pt; font-style: italic; margin-top: 2mm">(Total investering år 1: ' + fmt(total1) + ' kr inkl. installation och första årets SaaS-avgift)</div>'
+    + footerHTML + '</div></div>';
+
+  // PAGE 4: PRIS
+  let priceHTML = '';
+  prodLines.forEach(line => {
+    priceHTML += '<div class="brv-price-row"><div class="brv-price-label">' + escapeHTML(line.label) + '</div>'
+      + '<div class="brv-price-val">' + fmt(line.val) + ' kr' + (line.suffix || '') + '</div></div>';
+  });
+  html += '<div class="brv-page"><div class="brv-page-inner">' + headerHTML(4, totalPages)
+    + '<h2 class="brv-h2" style="margin-top: 0">Prisredovisning</h2>'
+    + '<p class="brv-p">Arbeten enligt detta prisförslag utförs mot ett pris om:</p>'
+    + '<div style="margin: 3mm 0 5mm 0">' + priceHTML
+    + '<div class="brv-price-row" style="border-top: 1px solid var(--brv-text); padding-top: 2mm; margin-top: 2mm">'
+    + '<div class="brv-price-label" style="font-weight: 700">TOTAL SUMMA år 1 (exkl. moms):</div>'
+    + '<div class="brv-price-val" style="font-weight: 700; font-size: 12pt">' + fmt(total1) + ' kr</div></div></div>'
+    + '<p class="brv-p">Gällande mervärdesskatt tillkommer och debiteras vid varje faktureringstillfälle.</p>'
+    + '<h2 class="brv-h2">Förtydliganden</h2><p class="brv-p">I vårt pris ingår ej:</p><ul class="brv-ul">'
+    + '<li>Hantering och deponering av miljöfarligt avfall.</li>'
+    + '<li>Eventuella extra kostnader för kommunikationskort till fjärrvärmemätare.</li>'
+    + '<li>Servis-, abonnemangs- och anslutningsavgifter.</li></ul>'
+    + '<h2 class="brv-h2">Betalningsvillkor</h2><p class="brv-p">Enligt betalningsplan. ÄTA-arbeten faktureras löpande, betalning 30 dagar netto.</p>'
+    + '<h2 class="brv-h2">Kvalitet och miljö</h2><p class="brv-p">Bravida Sverige AB är kvalitets- och miljöcertifierade enligt ISO 9001 och 14001.</p>'
+    + footerHTML + '</div></div>';
+
+  // PAGE 5: KONTAKT
+  html += '<div class="brv-page"><div class="brv-page-inner">' + headerHTML(5, totalPages)
+    + '<h2 class="brv-h2" style="margin-top: 0">Förfrågningar</h2>'
+    + '<p class="brv-p">Förfrågningar angående detta prisförslag besvaras av:</p>'
+    + '<p class="brv-p"><strong>' + escapeHTML(bNamn) + '</strong><br>'
+    + (bTel ? 'Telefon: ' + escapeHTML(bTel) + '<br>' : '')
+    + (bEpost ? 'E-post: ' + escapeHTML(bEpost) : '') + '</p>'
+    + '<p class="brv-p">Detta prisförslag är giltigt t o m ' + giltigStr + '. Förändringar och tillägg skall upprättas skriftligen för att vara bindande.</p>'
+    + '<h2 class="brv-h2">Övrigt</h2><p class="brv-p">Handlingar, förslag till förenklingar eller förbättringar är Bravida Sverige AB:s egendom och får enligt lagen om upphovsmannarätt ej kommersiellt användas, plagieras eller eljest användas utan vårt skriftliga godkännande.</p>'
+    + '<h2 class="brv-h2">Serviceavtal</h2><p class="brv-p">Vi erbjuder er även att teckna serviceavtal enligt Bravidas Servicekoncept för denna anläggning.</p>'
+    + '<div style="margin-top: 12mm"><p class="brv-p">Med vänlig hälsning<br><strong>Bravida Sverige AB</strong><br>' + escapeHTML(bOrt) + '</p>'
+    + '<div style="margin: 8mm 0 1mm 0" class="signature-cursive">' + escapeHTML(bNamn) + '</div><div>' + escapeHTML(bNamn) + '</div></div>'
+    + footerHTML + '</div></div>';
+
+  preview.innerHTML = html;
+}
+
+// ============================================
+// REGISTER
+// ============================================
+function collectAll() {
+  const data = {};
+  ['kund-namn','kund-kontakt','kund-adress','kund-ort','data-totalkwh','data-totalkr','data-vvmonth','data-antal-lgh','data-boa','data-temp','data-effekt','data-pct','data-ar','data-index','data-pris','data-specifik','kommun-select','b-namn','b-tel','b-epost','b-ort','b-datum','b-giltig','m-tg'].forEach(id => {
+    const el = $(id);
+    if (el) data[id] = el.value;
+  });
+  data.matningState = matningState;
+  data.tier = currentTier;
+  data.tierAuto = currentTierAuto;
+  data.pdfSource = pdfSource;
+  data.tillkommande = _tillkommande;
+  data.prisTouched = prisTouched;
+  return data;
+}
+
+function saveCustomer() {
+  const namn = $('kund-namn').value.trim();
+  if (!namn) { alert('Fyll i kundnamn först.'); return; }
+  const D = getEnergyData();
+  const customer = collectAll();
+  customer.id = 'c-' + Date.now();
+  customer.status = 'räknad';
+  customer.createdAt = new Date().toISOString();
+  customer.calc = { matning: matningRec(), besparingKr: D.besparingKr, pct: D.pct, pris: D.pris };
+  const idx = customers.findIndex(c => c['kund-namn'] === namn);
+  if (idx >= 0) {
+    customer.id = customers[idx].id;
+    customer.createdAt = customers[idx].createdAt;
+    customer.status = customers[idx].status;
+    customers[idx] = customer;
+    alert('✓ Kund uppdaterad i registret');
+  } else {
+    customers.push(customer);
+    alert('✓ Kund sparad');
+  }
+  persistCustomers();
+  updateRegisterCount();
+}
+
+function persistCustomers() {
+  try { localStorage.setItem('bravida-proptech-customers-v3', JSON.stringify(customers)); } catch(e) {}
+}
+
+function autoSave() {
+  const namn = $('kund-namn').value.trim();
+  if (!namn) return;
+  const D = getEnergyData();
+  const customer = collectAll();
+  customer.status = 'räknad';
+  const idx = customers.findIndex(c => c['kund-namn'] === namn);
+  if (idx >= 0) {
+    customer.id = customers[idx].id;
+    customer.createdAt = customers[idx].createdAt;
+    customer.status = customers[idx].status;
+    customer.calc = { matning: matningRec(), besparingKr: D.besparingKr, pct: D.pct, pris: D.pris };
+    customers[idx] = customer;
+    persistCustomers();
+    updateRegisterCount();
+  }
+}
+
+function updateRegisterCount() {
+  const el = $('register-count');
+  el.textContent = customers.length;
+  const hasAvtal = customers.length > 0 && customers.every(c => c.status === 'avtal');
+  const hasAnbud = customers.some(c => c.status === 'anbud');
+  if (hasAvtal) {
+    el.style.background = 'var(--success)';
+    el.style.color = '#fff';
+  } else if (hasAnbud) {
+    el.style.background = 'var(--gold)';
+    el.style.color = '#fff';
+  } else {
+    el.style.background = '';
+    el.style.color = '';
+  }
+}
+
+function renderRegister() {
+  const content = $('register-content');
+  if (customers.length === 0) { content.innerHTML = '<div class="empty-state"><p>Inga kunder sparade än.</p></div>'; return; }
+  customers.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  let html = '<table class="register-table"><thead><tr><th>Kund</th><th>LGH</th><th>Energipris</th><th>Mätning</th><th>Besparing/år</th><th>Status</th><th>Datum</th><th></th></tr></thead><tbody>';
+  customers.forEach(c => {
+    const calc = c.calc || {};
+    const rowStyle = c.status === 'anbud' ? 'background:#E8F4FF; border-left: 3px solid var(--brv-blue);'
+      : c.status === 'avtal' ? 'background:#E8F5E9; border-left: 3px solid var(--success);'
+      : c.status === 'avböjt' ? 'background:#FFEBEE; border-left: 3px solid var(--danger);'
+      : 'border-left: 3px solid transparent;';
+    html += '<tr style="' + rowStyle + '">'
+      + '<td><strong>' + escapeHTML(c['kund-namn'] || '') + '</strong><br><span style="color:var(--muted); font-size:0.82rem">' + escapeHTML(c['kund-ort'] || '') + '</span></td>'
+      + '<td>' + (c['data-antal-lgh'] || '–') + '</td>'
+      + '<td>' + (calc.pris ? fmtDecimal(calc.pris) + ' kr/kWh' : '–') + '</td>'
+      + '<td>' + (calc.matning ? fmt(calc.matning) + ' kr' : '–') + '</td>'
+      + '<td><strong>' + (calc.besparingKr ? fmt(calc.besparingKr) : '–') + '</strong> kr</td>'
+      + '<td><select onchange="updateStatus(\'' + c.id + '\', this.value)" style="border:none; background:transparent; padding:0; font-size:0.88rem; cursor:pointer">'
+      + '<option value="räknad"' + (c.status === 'räknad' ? ' selected' : '') + '>🟡 Räknad</option>'
+      + '<option value="anbud"' + (c.status === 'anbud' ? ' selected' : '') + '>🔵 Anbud skickat</option>'
+      + '<option value="avtal"' + (c.status === 'avtal' ? ' selected' : '') + '>🟢 Avtal</option>'
+      + '<option value="avböjt"' + (c.status === 'avböjt' ? ' selected' : '') + '>🔴 Avböjt</option></select></td>'
+      + '<td style="color:var(--muted)">' + (c.createdAt ? c.createdAt.split('T')[0] : '–') + '</td>'
+      + '<td><button class="btn-icon" onclick="loadCustomerById(\'' + c.id + '\')" style="padding: 4px 8px">Öppna</button> '
+      + '<button class="btn-icon" onclick="deleteCustomer(\'' + c.id + '\')" style="padding: 4px 8px; color: var(--danger)">✕</button></td>'
+      + '</tr>';
+  });
+  html += '</tbody></table>';
+  content.innerHTML = html;
+}
+
+function updateStatus(id, status) { const c = customers.find(x => x.id === id); if (c) { c.status = status; persistCustomers(); } }
+function loadCustomerById(id) { const c = customers.find(x => x.id === id); if (c) { populateForm(c); switchTab('kund'); } }
+function deleteCustomer(id) {
+  if (!confirm('Ta bort kunden?')) return;
+  customers = customers.filter(c => c.id !== id);
+  persistCustomers(); renderRegister(); updateRegisterCount();
+}
+
+function exportRegister() {
+  if (customers.length === 0) { alert('Inga kunder.'); return; }
+  let csv = 'Kund;Adress;Ort;LGH;BOA;Energipris;Mätning;Besparing kr/år;Status;Datum\n';
+  customers.forEach(c => {
+    const calc = c.calc || {};
+    csv += [c['kund-namn']||'', c['kund-adress']||'', c['kund-ort']||'', c['data-antal-lgh']||'', c['data-boa']||'',
+      calc.pris ? calc.pris.toFixed(2).replace('.', ',') : '',
+      calc.matning ? Math.round(calc.matning) : '', calc.besparingKr ? Math.round(calc.besparingKr) : '',
+      c.status || 'räknad', c.createdAt ? c.createdAt.split('T')[0] : ''
+    ].map(v => '"' + v + '"').join(';') + '\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Bravida_Kundregister_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+
+function loadCustomer(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try { populateForm(JSON.parse(e.target.result)); alert('✓ Kund laddad'); }
+    catch(err) { alert('Fel: ' + err.message); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function populateForm(data) {
+  Object.keys(data).forEach(id => {
+    if (['matningState','tier','tierAuto','pdfSource','tillkommande','prisTouched','status','id','createdAt','calc'].includes(id)) return;
+    const el = $(id);
+    if (el && data[id] !== undefined) el.value = data[id];
+  });
+  if (data.matningState) matningState = data.matningState;
+  if (data.tier) { currentTier = data.tier; currentTierAuto = data.tierAuto || false; }
+  if (data.pdfSource) pdfSource = data.pdfSource;
+  if (data.tillkommande) _tillkommande = data.tillkommande;
+  prisTouched = !!data.prisTouched;
+  if ($('kommun-select').value) onKommunSelect();
+  onChange();
+}
+
+function resetForm() {
+  if (!confirm('Rensa allt och börja en ny kund?')) return;
+  document.querySelectorAll('input').forEach(i => {
+    if (i.id === 'data-temp') i.value = '22';
+    else if (i.id === 'data-pct') i.value = '15';
+    else if (i.id === 'data-ar') i.value = '2026';
+    else if (i.id === 'data-index') i.value = '3021-25 Teknikinstallationsavtalet';
+    else if (i.id === 'data-pris') i.value = '0.85';
+    else if (i.id === 'data-specifik') i.value = '193';
+    else if (i.id === 'm-tg') i.value = '0.35';
+    else if (i.id === 'b-namn') i.value = 'Jonis Awad';
+    else if (i.id === 'b-epost') i.value = 'jonis.awad@bravida.se';
+    else if (i.id === 'b-datum') i.value = new Date().toISOString().split('T')[0];
+    else if (i.id !== 'load-file' && i.type !== 'file') i.value = '';
+  });
+  $('kommun-info').textContent = '';
+  $('pris-hint').textContent = 'Standard 0,85 kr/kWh';
+  matningState = MATNING_ITEMS.map(i => ({ ...i }));
+  currentTier = null; currentTierAuto = true; pdfSource = 'energi'; _tillkommande = 0; prisTouched = false;
+  onChange();
+}
+
+// ============================================
+// PDF ENERGIDEKLARATION IMPORT
+// ============================================
+let _parsedPdfData = null;
+
+function openPdfModal() { $('pdf-modal').classList.add('open'); }
+function closePdfModal() { $('pdf-modal').classList.remove('open'); }
+function closePdfModalOutside(e) { if (e.target === $('pdf-modal')) closePdfModal(); }
+function onPdfDragOver(e) { e.preventDefault(); $('pdf-drop-zone').classList.add('drag-over'); }
+function onPdfDragLeave() { $('pdf-drop-zone').classList.remove('drag-over'); }
+function onPdfDrop(e) { e.preventDefault(); $('pdf-drop-zone').classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f && f.type === 'application/pdf') parsePdfFile(f); }
+function onPdfFileSelected(e) { const f = e.target.files[0]; if (f) parsePdfFile(f); e.target.value = ''; }
+
+function setPdfStatus(msg, type) {
+  const el = $('pdf-status');
+  el.textContent = msg; el.className = 'pdf-status ' + type;
+}
+
+async function parsePdfFile(file) {
+  _parsedPdfData = null;
+  $('pdf-parse-result').classList.remove('visible');
+  $('btn-pdf-apply').classList.remove('visible');
+  setPdfStatus('Läser PDF…', 'loading');
+
+  try {
+    if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js laddades inte — kontrollera internetanslutning.');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      fullText += content.items.map(it => it.str).join(' ') + '\n';
+    }
+
+    const data = parseBoverketText(fullText);
+    _parsedPdfData = data;
+    showPdfParseResult(data);
+    setPdfStatus('✓ PDF tolkad! Kontrollera värdena och klicka "Fyll i formuläret".', 'success');
+    $('btn-pdf-apply').classList.add('visible');
+  } catch(err) {
+    setPdfStatus('Fel: ' + err.message, 'error');
+  }
+}
+
+function parseBoverketText(text) {
+  const t = text.replace(/\s+/g, ' ');
+  const num = (pattern) => {
+    const m = t.match(pattern);
+    return m ? parseFloat(m[1].replace(/\s/g,'').replace(',','.')) : null;
+  };
+  const str = (pattern) => {
+    const m = t.match(pattern);
+    return m ? m[1].trim() : null;
+  };
+
+  // Antal lägenheter — value appears BEFORE label in Boverket PDF text stream
+  const lgh = num(/([\d]+)\s+Antal bostadslägenheter/);
+
+  // Atemp — value appears before label
+  const atemp = num(/([\d]+)\s+Atemp\s*\(exkl/);
+
+  // Fjärrvärme uppvärmning och VV - "Fjärrvärme \(1\) 248800 58163 kWh"
+  let fjvUppv = null, fjvVv = null;
+  const fjvMatch = t.match(/Fjärrvärme\s*\(1\)\s*([\d\s]+?)\s+([\d\s]+?)\s*kWh/);
+  if (fjvMatch) {
+    fjvUppv = parseFloat(fjvMatch[1].replace(/\s/g,''));
+    fjvVv   = parseFloat(fjvMatch[2].replace(/\s/g,''));
+  }
+
+  // Fastighetsel
+  const fastel = num(/Fastighetsel[^0-9]*([\d\s]+)\s*kWh/);
+
+  // Total summa energi
+  const totalEnergy = num(/Summa[^0-9]*([\d\s]{4,})\s*kWh/);
+
+  // Energiklass
+  const eklass = str(/DENNA BYGGNADS ENERGIKLASS\s*([A-G])/i) ||
+                 str(/Energiklass\s+([A-G])\b/);
+
+  // Primärenergital
+  const pet = num(/primärenergital[^0-9]*([\d]+)\s*kWh/i);
+
+  // Specifik energianvändning
+  const seu = num(/Specifik energianvändning[^0-9]*([\d]+)\s*kWh/i);
+
+  // Nybyggnadsår — value before label
+  const byggar = num(/([\d]{4})\s+Nybyggnadsår/);
+
+  // Adress - look for typical Swedish address pattern
+  const adressMatch = t.match(/([A-ZÅÄÖ][a-zåäö]+gatan|[A-ZÅÄÖ][a-zåäö]+vägen|[A-ZÅÄÖ][a-zåäö]+svägen|[A-ZÅÄÖ][a-zåäö]+allén|[A-ZÅÄÖ][a-zåäö]+plan|Bergslagsgatan|[A-ZÅÄÖ][a-zåäö]+backen)\s+\d+[A-Z]?/);
+  const adress = adressMatch ? adressMatch[0] : null;
+
+  // Postnummer + Ort — values appear BEFORE their labels in Boverket PDF
+  const postnrMatch = t.match(/(\d{5})\s+Postnummer/);
+  const postnr = postnrMatch ? postnrMatch[1] : null;
+  const postortMatch = t.match(/([A-ZÅÄÖ][a-zåäö]+)\s+Postort/);
+  const postort = postortMatch ? postortMatch[1] : null;
+
+  // Kommun — value before label
+  const kommunMatch = t.match(/([A-ZÅÄÖ][a-zåäö]+)\s+Kommun/);
+  const kommun = kommunMatch ? kommunMatch[1] : (postort || null);
+
+  // VV per månad
+  const vvPerManad = fjvVv ? Math.round(fjvVv / 12) : null;
+  // Total kWh (uppv + vv)
+  const totalKwh = (fjvUppv != null && fjvVv != null) ? fjvUppv + fjvVv : fjvUppv;
+
+  return { lgh, atemp, fjvUppv, fjvVv, vvPerManad, totalKwh, fastel, totalEnergy, eklass, pet, seu, byggar, adress, postnr, postort, kommun };
+}
+
+function showPdfParseResult(d) {
+  const rows = [
+    ['Adress', d.adress],
+    ['Postnr & Ort', d.postnr && d.postort ? d.postnr + ' ' + d.postort : null],
+    ['Kommun', d.kommun],
+    ['Antal lägenheter', d.lgh],
+    ['Atemp (BOA) m²', d.atemp],
+    ['Fjärrvärme uppvärmning', d.fjvUppv ? d.fjvUppv.toLocaleString('sv-SE') + ' kWh/år' : null],
+    ['Fjärrvärme VV', d.fjvVv ? d.fjvVv.toLocaleString('sv-SE') + ' kWh/år' : null],
+    ['→ Total kWh (uppv+VV)', d.totalKwh ? d.totalKwh.toLocaleString('sv-SE') + ' kWh' : null],
+    ['→ VV per månad', d.vvPerManad ? d.vvPerManad.toLocaleString('sv-SE') + ' kWh/mån' : null],
+    ['Energiklass', d.eklass],
+    ['Primärenergital', d.pet ? d.pet + ' kWh/m²' : null],
+    ['Nybyggnadsår', d.byggar],
+  ];
+  let html = '';
+  rows.forEach(([label, val]) => {
+    html += '<div class="parse-row"><span class="parse-label">' + label + '</span>'
+      + '<span class="parse-val' + (val == null ? ' missing' : '') + '">' + (val != null ? escapeHTML(String(val)) : 'ej hittad') + '</span></div>';
+  });
+  $('pdf-parse-rows').innerHTML = html;
+  $('pdf-parse-result').classList.add('visible');
+}
+
+function applyPdfData() {
+  const d = _parsedPdfData;
+  if (!d) return;
+
+  if (d.adress)     { const el = $('kund-adress'); if (el && !el.value) el.value = d.adress; }
+  if (d.postnr && d.postort) { const el = $('kund-ort'); if (el && !el.value) el.value = d.postnr + ' ' + d.postort; }
+  if (d.lgh)        { $('data-antal-lgh').value = d.lgh; }
+  if (d.atemp)      { $('data-boa').value = d.atemp; }
+  if (d.totalKwh)   { $('data-totalkwh').value = Math.round(d.totalKwh); }
+  if (d.vvPerManad) { $('data-vvmonth').value = d.vvPerManad; }
+
+  // Auto-set municipality for energy price
+  if (d.kommun) {
+    const kommunEl = $('kommun-select');
+    if (kommunEl) {
+      kommunEl.value = d.kommun;
+      onKommunSelect();
+    }
+  }
+
+  onChange();
+  closePdfModal();
+  switchTab('kund');
+
+  // Flash the form to indicate it was filled
+  const hero = document.querySelector('#panel-kund .hero');
+  if (hero) {
+    const orig = hero.style.background;
+    hero.style.background = 'linear-gradient(135deg, #2E9968 0%, #1a6b48 100%)';
+    setTimeout(() => { hero.style.background = orig; }, 1200);
+  }
+}
+
+// INIT
+populateKommunList();
+$('b-datum').value = new Date().toISOString().split('T')[0];
+onChange();
+updateRegisterCount();
+</script>
+</body>
+</html>
